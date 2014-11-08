@@ -16,5 +16,5 @@ Run commands:
         make
         ./duckhaunt
 
-[Google Doc][https://docs.google.com/document/d/1TTdBHlfw9nqK5_OXADW4CyzqTXATi-f-pGh81lKu3uk/edit]
-[SDL][http://libsdl.org/]
+[Google Doc](https://docs.google.com/document/d/1TTdBHlfw9nqK5_OXADW4CyzqTXATi-f-pGh81lKu3uk/edit)
+[SDL](http://libsdl.org/)
