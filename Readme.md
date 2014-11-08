@@ -10,7 +10,10 @@ Compiling
 
 
 Ensure that you have SDL v2 installed.
-
+```
+sudo pacman -S sdl2
+sudo apt-get install libsdl2-dev
+```
 Run commands:
 
         make
