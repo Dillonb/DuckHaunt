@@ -6,8 +6,20 @@ Radian::Radian(double val) {
     radVal = val * 0.0174532925;
 }
 
-void Radian::operator* (double factor) {
+void Radian::operator*(double factor) {
     radVal = factor * radVal;
+}
+
+void Radian::operator+(double addend) {
+    radVal = addend + radVal;
+}
+
+void Radian::operator*(Radian factor) {
+    radVal = factor.radVal * radVal;
+}
+
+void Radian::operator+(Radian addend) {
+    radVal = addend.radVal + radVal;
 }
 
 double Radian::toRad() {

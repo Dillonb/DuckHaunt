@@ -12,6 +12,9 @@ class Radian {
         double toRad();
         double toDegrees();
         void operator*(double);
+        void operator+(double);
+        void operator*(Radian);
+        void operator+(Radian);
 };
 
 #endif
