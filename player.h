@@ -1,8 +1,14 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-class Player {
+#include "radian.h"
 
+class Player {
+    Radian angle;
+    Radian FOV;
+
+    public:
+        Player();
 };
 
 #endif

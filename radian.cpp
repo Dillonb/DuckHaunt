@@ -1,31 +1,84 @@
 #include "radian.h"
+#include "math.h"
 
 Radian::Radian(double val) {
-    this->plainNum = val;
     //1 degree is 0.0174532925 radians
     radVal = val * 0.0174532925;
+    normalize();
 }
 
-void Radian::operator*(double factor) {
-    radVal = factor * radVal;
+Radian::Radian() {
+    this->radVal = 0;
 }
 
-void Radian::operator+(double addend) {
-    radVal = addend + radVal;
+Radian::Radian(const Radian& other) {
+    this->radVal = other.radVal;
 }
 
-void Radian::operator*(Radian factor) {
-    radVal = factor.radVal * radVal;
+Radian Radian::operator*(double factor) {
+    Radian temp;
+    temp.radVal = radVal * factor;
+    temp.normalize();
+    return temp;
 }
 
-void Radian::operator+(Radian addend) {
-    radVal = addend.radVal + radVal;
+Radian Radian::operator+(double addend) {
+    Radian temp;
+    temp.radVal = radVal + addend;
+    temp.normalize();
+    return temp;
+}
+
+Radian Radian::operator-(double subtrahend) {
+    Radian temp;
+    temp.radVal = radVal - subtrahend;
+    temp.normalize();
+    return temp;
+}
+
+Radian Radian::operator-(Radian subtrahend) {
+    Radian temp;
+    temp.radVal = radVal - subtrahend.radVal;
+    temp.normalize();
+    return temp;
+}
+
+Radian Radian::operator*(Radian factor) {
+    Radian temp;
+    temp.radVal = radVal - factor.radVal;
+    temp.normalize();
+    return temp;
+}
+
+Radian Radian::operator+(Radian addend) {
+    Radian temp;
+    temp.radVal = radVal + addend.radVal;
+    temp.normalize();
+    return temp;
+}
+
+Radian Radian::operator/(double divisor) {
+    Radian temp;
+    temp.radVal = radVal / divisor;
+    temp.normalize();
+    return temp;
 }
 
 double Radian::toRad() {
     return this->radVal;
 }
+
 double Radian::toDegrees() {
-    plainNum = radVal/0.0174532925;
-    return plainNum;
+    return radVal/0.0174532925;
+}
+
+// Normalizes a radian value - if it's more than 2PI, keep subtracting 2PI until it's not
+// If it's less than 0, keep addding 2PI until it's not
+void Radian::normalize() {
+    while (this->radVal >= 2 * M_PI) {
+        this->radVal -= 2 * M_PI;
+    }
+    while (this->radVal < 0) {
+        this->radVal += 2 * M_PI;
+    }
 }

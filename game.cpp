@@ -6,6 +6,11 @@ Game::Game(int w, int h) {
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
     this->surface = SDL_GetWindowSurface(this->window);
+    this->world.addDuck(Duck(Radian(0), 10));
+    this->world.addDuck(Duck(Radian(10), 20));
+    this->world.addDuck(Duck(Radian(20), 30));
+    this->world.addDuck(Duck(Radian(30), 40));
+
 }
 
 void Game::redraw() {

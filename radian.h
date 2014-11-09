@@ -3,18 +3,26 @@
 //this class takes a degree value
 //it stores the degree and calculate the radian
 class Radian {
-    double plainNum;
     double radVal;
 
 
+    void normalize();
+
     public:
-        Radian(double);
+        Radian(double); // Construct from degrees
+        Radian(const Radian&); // Copy constructor
+        Radian();
         double toRad();
         double toDegrees();
-        void operator*(double);
-        void operator+(double);
-        void operator*(Radian);
-        void operator+(Radian);
+        Radian operator*(double);
+        Radian operator+(double);
+        Radian operator-(double);
+        Radian operator/(double);
+        Radian operator*(Radian);
+        Radian operator+(Radian);
+        Radian operator-(Radian);
+
+        bool between(Radian, Radian);
 };
 
 #endif
