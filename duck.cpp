@@ -3,6 +3,7 @@
 Duck::Duck(Radian angle, double distance) {
     this->angle = angle;
     this->distance = distance;
+    this->duckType = 0;
 }
 bool Duck::isVisible(Radian playerAngle, Radian fieldOfView) {
     double halfFov = (fieldOfView / 2).toRad();
@@ -18,4 +19,12 @@ double Duck::getDistance() {
 
 Radian Duck::getAngle() {
     return this->angle;
+}
+
+int Duck::getType() {
+	return this->duckType;
+}
+
+void Duck::setType(int newType) {
+	this->duckType = newType;
 }

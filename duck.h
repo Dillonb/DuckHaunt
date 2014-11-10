@@ -6,6 +6,7 @@
 class Duck {
     Radian angle;
     double distance;
+    int duckType;
 
     public:
         Duck(Radian, double);
@@ -13,6 +14,8 @@ class Duck {
 
         double getDistance();
         Radian getAngle();
+        int getType();
+        void setType(int);
 };
 
 #endif
