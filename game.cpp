@@ -6,6 +6,8 @@ Game::Game(int w, int h) {
     this->height = h;
     this->radarSize = w / 7;
 
+    IMG_Init(IMG_INIT_PNG); //allows png rendering
+
     if(!this->cap.isOpened()) return; // check if we succeeded
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
@@ -84,28 +86,15 @@ void Game::drawRadar() {
 }
 
 void Game::drawDucks() {
-    SDL_Rect duckRect;
-    duckRect.x = 288;
-    duckRect.y = 208;
-    duckRect.w = 64;
-    duckRect.h = 64;
+    
+    for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
+            typeNum = iDuck->getType() + 1;
+            SDL_Rect duckSrcRect = {288, 208, 64 * typeNum, 64 * typeNum};
+            SDL_Rect duckDstRect = {288, 208, 64 * typeNum, 64 * typeNum};
 
-    //Draw Ducks every 15 frames
-    if (this->frameCount == 0)
-    {
-        printf("Ducks actually Redrawn\n");
-        // Draw ducks
-        // iDuck is both the iterator and a pointer to a duck in the list
-        // this loops through every duck in the duck list
-        for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
-            typeNum = iDuck->getType();
-            //SDL_RenderCopy(renderer,duckTexture[typeNum],NULL, &duckRect);
+            typeNum = (typeNum) % 4;
+            iDuck->setType(typeNum);
         }
-    } else if (this->frameCount == 14){
-        this->frameCount = -1;
-    }
-
-    this->frameCount++;
 }
 
 void Game::run() {

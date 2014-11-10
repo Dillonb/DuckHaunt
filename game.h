@@ -14,9 +14,6 @@ class Game {
     SDL_Surface* surface = NULL;
     SDL_Texture* texture = NULL;
     SDL_Texture* radarTexture = NULL;
-    SDL_Texture* duckUp = NULL;
-    SDL_Texture* duckMid = NULL;
-    SDL_Texture* duckDown = NULL;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     int width;
