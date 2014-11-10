@@ -39,11 +39,13 @@ void Game::redraw() {
     boxRGBA(this->renderer, 0, 0, this->width, this->height, 0x00, 0x00, 0x00, 0xFF);
     printf("box RGBA made\n");
     
-=======
+
     //SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, 0x00, 0x00, 0x00));
     boxRGBA(this->renderer, 0, 0, this->width, this->height, 0x00, 0x00, 0x00, 0xFF);
 
->>>>>>> 7dd0a6c136e37eadbcbe697c1fc2b2f952b4f8e2
+    drawDucks();
+    printf("Ducks Drawn\n");
+
     drawRadar();
     printf("Radar Drawn\n");
 
@@ -87,14 +89,31 @@ void Game::drawRadar() {
 }
 
 void Game::drawDucks() {
+    SDL_Rect duckRect;
+    duckRect.x = 288;
+    duckRect.y = 208;
+    duckRect.w = 64;
+    duckRect.h = 64;
     
-    // Draw ducks
-    // iDuck is both the iterator and a pointer to a duck in the list
-    // this loops through every duck in the duck list
-    for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
-        
-        
+    //Draw Ducks every 15 frames
+    if (this->frameCount == 0)
+    {
+        printf("Ducks actually Redrawn\n");
+        // Draw ducks
+        // iDuck is both the iterator and a pointer to a duck in the list
+        // this loops through every duck in the duck list
+        for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
+            typeNum = iDuck->getType();
+            //SDL_RenderCopy(renderer,duckTexture[typeNum],NULL, &duckRect);
+            
+        }
     }
+    else if (this->frameCount == 14)
+    {
+        this->frameCount = -1;
+    }
+
+    this->frameCount++;
 }
 
 void Game::run() {

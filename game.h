@@ -20,6 +20,8 @@ class Game {
     int height;
     double radarSize;
     World world;
+    int typeNum;
+    int frameCount;
 
     void redraw();
 
