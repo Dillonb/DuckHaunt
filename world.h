@@ -20,7 +20,7 @@ class World {
         list<Duck>::iterator getDuckIterator();
         list<Duck>::iterator getDuckEnd();
 
-        Player getPlayer();
+        Player* getPlayer();
 };
 
 #endif

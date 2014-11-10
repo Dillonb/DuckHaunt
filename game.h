@@ -25,8 +25,5 @@ class Game {
     public:
         Game(int, int);
         void run();
-        void turnLeft(Radian);
-        void turnRight(Radian);
-
 };
 #endif
