@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS=-Wall -O0 -g
-LDFLAGS=-lSDL2 -lSDL2_gfx
+CFLAGS=-Wall -O0 -g `pkg-config --cflags opencv`
+LDFLAGS=-lSDL2 -lSDL2_gfx `pkg-config --libs opencv`
 SOURCES=main.cpp game.cpp duck.cpp world.cpp player.cpp radian.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=duckhaunt

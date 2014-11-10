@@ -6,6 +6,9 @@
 #include "radian.h"
 #include "duck.h"
 #include "world.h"
+#include "opencv2/opencv.hpp"
+
+using namespace cv;
 
 class Game {
     SDL_Surface* surface = NULL;
@@ -22,12 +25,16 @@ class Game {
     World world;
     int typeNum;
     int frameCount;
-
+    Mat edges;
+    Mat image;
+    VideoCapture cap;
     void redraw();
 
     void drawRadar();
 
     void drawDucks();
+
+    SDL_Surface* convertToSDLSurface(const Mat&);
 
     public:
         Game(int, int);

@@ -1,18 +1,20 @@
 #include "game.h"
 
 Game::Game(int w, int h) {
+    this->cap = VideoCapture(0);
     this->width = w;
     this->height = h;
     this->radarSize = w / 7;
 
+    if(!this->cap.isOpened()) return; // check if we succeeded
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
     printf("Created Window\n");
-    this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+    this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED); // draw things to screen
     printf("Created Renderer\n");
 
-    this->surface = SDL_GetWindowSurface(this->window);
-    this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface);
+    this->surface = SDL_GetWindowSurface(this->window); // 
+    this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
     this->world.addDuck(Duck(Radian(10), 20));
     this->world.addDuck(Duck(Radian(20), 30));
@@ -23,15 +25,18 @@ Game::Game(int w, int h) {
 }
 
 void Game::redraw() {
+    this->cap >> this->image; // get a new frame from camera
+
+    //convert it to SDL_Surface
+    SDL_Texture* frame=SDL_CreateTextureFromSurface(this->renderer, convertToSDLSurface(this->image));
+    SDL_RenderCopy(this->renderer, frame, NULL, NULL);
+    //render the whole thing out to 0,0 coordinate
+    // SDL_BlitSurface(frame,NULL,this->surface,NULL);
+    //avoid memory leaks
+    // SDL_FreeSurface(frame);
+
     // Fill screen with black (eventually draw output of webcam here)
-    printf("Draw Webcam (later)\n");
-    //SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, 0x00, 0x00, 0x00));
-    boxRGBA(this->renderer, 0, 0, this->width, this->height, 0x00, 0x00, 0x00, 0xFF);
-    printf("box RGBA made\n");
-
-
-    //SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, 0x00, 0x00, 0x00));
-    boxRGBA(this->renderer, 0, 0, this->width, this->height, 0x00, 0x00, 0x00, 0xFF);
+    printf("Drawing Webcam\n");
 
     drawDucks();
     printf("Ducks Drawn\n");
@@ -96,9 +101,7 @@ void Game::drawDucks() {
             typeNum = iDuck->getType();
             //SDL_RenderCopy(renderer,duckTexture[typeNum],NULL, &duckRect);
         }
-    }
-    else if (this->frameCount == 14)
-    {
+    } else if (this->frameCount == 14){
         this->frameCount = -1;
     }
 
@@ -109,7 +112,7 @@ void Game::run() {
     bool quit = false;
     SDL_Event e;
     while (!quit) {
-        SDL_Delay(100); // Wait 100ms before trying again when the stack of events becomes empty
+        SDL_Delay(10); // Wait 100ms before trying again when the stack of events becomes empty
 
         while (SDL_PollEvent(&e) != 0) { // Pull events from the stack until we can't anymore
             // Loop through each type of event
@@ -136,4 +139,18 @@ void Game::run() {
         }
         this->redraw();
     }
+}
+
+SDL_Surface* Game::convertToSDLSurface(const Mat& img){
+    //"convert" it to older format, because I found conversation for that, and it's too late for me to rewrite it to the newer Mat
+    IplImage opencvimg2=(IplImage)img;
+    IplImage* opencvimg=&opencvimg2;
+    //do the actual conversation to the good ol' SDL_Surface
+    SDL_Surface *surface = SDL_CreateRGBSurfaceFrom((void*)opencvimg->imageData,
+                                                    opencvimg->width,
+                                                    opencvimg->height,
+                                                    opencvimg->depth*opencvimg->nChannels,
+                                                    opencvimg->widthStep,
+                                                    0xff0000, 0x00ff00, 0x0000ff, 0);
+    return surface;
 }
