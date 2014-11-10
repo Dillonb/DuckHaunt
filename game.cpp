@@ -102,6 +102,8 @@ void Game::drawDucks() {
                 typeNum = (typeNum % 4);//max the typenum at 3
                 iDuck->setType(typeNum);
             }
+
+            SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
         }
 }
 
