@@ -8,9 +8,9 @@ Game::Game(int w, int h) {
     printf("%d %d\n", w, h);
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
-    printf("Hi\n");
+    printf("Created Window\n");
     this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
-    printf("Hi again\n");
+    printf("Created Renderer\n");
 
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface);
@@ -25,16 +25,17 @@ Game::Game(int w, int h) {
 
 void Game::redraw() {
     // Fill screen with black (eventually draw output of webcam here)
-    printf("Hiii\n");
+    printf("Draw Webcam (later)\n");
     //SDL_FillRect(this->surface, NULL, SDL_MapRGB(this->surface->format, 0x00, 0x00, 0x00));
     boxRGBA(this->renderer, 0, 0, this->width, this->height, 0x00, 0x00, 0x00, 0xFF);
-
-    printf("Hiii\n");
+    printf("box RGBA made\n");
+    
     drawRadar();
+    printf("Radar Drawn\n");
 
-    printf("Hiii\n");
     SDL_UpdateWindowSurface(this->window);
-    printf("Hiii\n");
+    printf("Updated Surface\n");
+
     SDL_RenderPresent(this->renderer);
 }
 
@@ -61,6 +62,17 @@ void Game::drawRadar() {
                 2,
                 0xFF, 0x00, 0x00,
                 0xFF);
+    }
+}
+
+void Game::drawDucks() {
+    
+    // Draw ducks
+    // iDuck is both the iterator and a pointer to a duck in the list
+    // this loops through every duck in the duck list
+    for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
+        
+        
     }
 }
 
