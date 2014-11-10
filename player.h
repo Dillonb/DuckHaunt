@@ -2,13 +2,19 @@
 #define PLAYER_H
 
 #include "radian.h"
+#include <cstdlib>
+#include <cstdio>
 
 class Player {
-    Radian angle;
-    Radian FOV;
 
     public:
         Player();
+        Radian angle;
+        Radian FOV;
+        void turnRight(Radian);
+        void turnLeft(Radian);
+        Radian getAngle();
+        Radian getFov();
 };
 
 #endif

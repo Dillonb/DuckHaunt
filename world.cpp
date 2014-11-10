@@ -16,3 +16,7 @@ list<Duck>::iterator World::getDuckEnd() {
 World::World() {
     // Do nothing
 }
+
+Player World::getPlayer() {
+    return this->player;
+}
