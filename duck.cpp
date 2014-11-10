@@ -1,4 +1,6 @@
 #include "duck.h"
+#include <cstdio>
+#include <cstdlib>
 
 Duck::Duck(Radian angle, double distance) {
     this->angle = angle;
@@ -18,13 +20,14 @@ double Duck::getDistance() {
 }
 
 Radian Duck::getAngle() {
+    printf("Duck is %f rad\n", this->angle.toRad());
     return this->angle;
 }
 
 int Duck::getType() {
-	return this->duckType;
+    return this->duckType;
 }
 
 void Duck::setType(int newType) {
-	this->duckType = newType;
+    this->duckType = newType;
 }

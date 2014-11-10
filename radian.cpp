@@ -18,42 +18,42 @@ Radian::Radian(const Radian& other) {
     this->radVal = other.radVal;
 }
 
-Radian Radian::operator*(const double& factor) {
+Radian Radian::operator*(double factor) {
     Radian temp;
     temp.radVal = radVal * factor;
     temp.normalize();
     return temp;
 }
 
-Radian Radian::operator+(const double& addend) {
+Radian Radian::operator+(double addend) {
     Radian temp;
     temp.radVal = radVal + addend;
     temp.normalize();
     return temp;
 }
 
-Radian Radian::operator-(const double& subtrahend) {
+Radian Radian::operator-(double subtrahend) {
     Radian temp;
     temp.radVal = radVal - subtrahend;
     temp.normalize();
     return temp;
 }
 
-Radian Radian::operator-(const Radian& subtrahend) {
+Radian Radian::operator-(Radian subtrahend) {
     Radian temp;
     temp.radVal = radVal - subtrahend.radVal;
     temp.normalize();
     return temp;
 }
 
-Radian Radian::operator*(const Radian& factor) {
+Radian Radian::operator*(Radian factor) {
     Radian temp;
-    temp.radVal = radVal - factor.radVal;
+    temp.radVal = radVal * factor.radVal;
     temp.normalize();
     return temp;
 }
 
-Radian Radian::operator+(const Radian& addend) {
+Radian Radian::operator+(Radian addend) {
     Radian temp;
     temp.radVal = radVal + addend.radVal;
     temp.normalize();
@@ -80,20 +80,21 @@ void Radian::subtract(Radian amount) {
     normalize();
 }
 
-Radian Radian::operator/(const double& divisor) {
+Radian Radian::operator/(double divisor) {
     Radian temp;
     temp.radVal = radVal / divisor;
     temp.normalize();
     return temp;
 }
 
-Radian Radian::operator=(const Radian& other) {
+Radian Radian::operator=(Radian other) {
     printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
     this->radVal = other.radVal;
     printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
 }
 
 double Radian::toRad() {
+    printf("RADIAN VALUE: %f\n", this->radVal);
     return this->radVal;
 }
 
