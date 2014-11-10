@@ -3,6 +3,7 @@
 #include <math.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
+#include "SDL2/SDL_image.h"
 #include "radian.h"
 #include "duck.h"
 #include "world.h"
@@ -15,7 +16,7 @@ class Game {
     SDL_Surface* spriteSurface;
     SDL_Texture* texture = NULL;
     SDL_Texture* radarTexture = NULL;
-    SDL_Texture* texture;
+    SDL_Texture* spriteTexture;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     int width;
