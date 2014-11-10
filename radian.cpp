@@ -1,6 +1,9 @@
 #include "radian.h"
 #include "math.h"
 
+#include <cstdlib>
+#include <cstdio>
+
 Radian::Radian(double val) {
     //1 degree is 0.0174532925 radians
     radVal = val * 0.0174532925;
@@ -62,6 +65,12 @@ Radian Radian::operator/(double divisor) {
     temp.radVal = radVal / divisor;
     temp.normalize();
     return temp;
+}
+
+Radian Radian::operator=(Radian other) {
+    printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
+    this->radVal = other.radVal;
+    printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
 }
 
 double Radian::toRad() {

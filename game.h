@@ -15,7 +15,7 @@ class Game {
     SDL_Renderer* renderer = NULL;
     int width;
     int height;
-    int radarSize;
+    double radarSize;
     World world;
 
     void redraw();
@@ -25,6 +25,8 @@ class Game {
     public:
         Game(int, int);
         void run();
+        void turnLeft(Radian);
+        void turnRight(Radian);
 
 };
 #endif

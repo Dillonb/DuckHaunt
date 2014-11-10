@@ -21,6 +21,7 @@ class Radian {
         Radian operator*(Radian);
         Radian operator+(Radian);
         Radian operator-(Radian);
+        Radian operator=(Radian);
 
         bool between(Radian, Radian);
 };

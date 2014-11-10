@@ -4,11 +4,13 @@
 #include <list>
 #include <cstdio>
 #include "duck.h"
+#include "player.h"
 
 using namespace std;
 
 class World {
     list<Duck> ducks;
+    Player player;
 
     public:
         World();
@@ -17,6 +19,8 @@ class World {
 
         list<Duck>::iterator getDuckIterator();
         list<Duck>::iterator getDuckEnd();
+
+        Player getPlayer();
 };
 
 #endif
