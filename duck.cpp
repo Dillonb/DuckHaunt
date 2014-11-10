@@ -11,3 +11,11 @@ bool Duck::isVisible(Radian playerAngle, Radian fieldOfView) {
 
     return (left <= this->angle.toRad() <= right);
 }
+
+double Duck::getDistance() {
+    return this->distance;
+}
+
+Radian Duck::getAngle() {
+    return this->angle;
+}

@@ -10,6 +10,9 @@ class Duck {
     public:
         Duck(Radian, double);
         bool isVisible(Radian, Radian);
+
+        double getDistance();
+        Radian getAngle();
 };
 
 #endif

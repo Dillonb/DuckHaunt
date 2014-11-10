@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS=-Wall
-LDFLAGS=-lSDL2
+CFLAGS=-Wall -O0 -g
+LDFLAGS=-lSDL2 -lSDL2_gfx
 SOURCES=main.cpp game.cpp duck.cpp world.cpp player.cpp radian.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=duckhaunt

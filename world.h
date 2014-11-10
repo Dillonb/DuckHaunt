@@ -16,6 +16,7 @@ class World {
         void addDuck(Duck);
 
         list<Duck>::iterator getDuckIterator();
+        list<Duck>::iterator getDuckEnd();
 };
 
 #endif
