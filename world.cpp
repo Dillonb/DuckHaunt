@@ -17,6 +17,6 @@ World::World() {
     // Do nothing
 }
 
-Player World::getPlayer() {
-    return this->player;
+Player* World::getPlayer() {
+    return &this->player;
 }

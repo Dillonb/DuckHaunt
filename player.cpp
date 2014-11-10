@@ -13,11 +13,11 @@ Radian Player::getFov() {
 }
 
 void Player::turnLeft(Radian amount) {
-    this->angle = this->angle - amount;
+    this->angle.subtract(amount);
     printf("New angle: %f\n", this->angle.toRad());
 }
 
 void Player::turnRight(Radian amount) {
-    this->angle = this->angle + amount;
+    this->angle.add(amount);
     printf("New angle: %f\n", this->angle.toRad());
 }

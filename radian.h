@@ -14,14 +14,20 @@ class Radian {
         Radian();
         double toRad();
         double toDegrees();
-        Radian operator*(double);
-        Radian operator+(double);
-        Radian operator-(double);
-        Radian operator/(double);
-        Radian operator*(Radian);
-        Radian operator+(Radian);
-        Radian operator-(Radian);
-        Radian operator=(Radian);
+        Radian operator*(const double&);
+        Radian operator+(const double&);
+        Radian operator-(const double&);
+        Radian operator/(const double&);
+        Radian operator*(const Radian&);
+        Radian operator+(const Radian&);
+        Radian operator-(const Radian&);
+        Radian operator=(const Radian&);
+
+        void add(Radian amount);
+        void subtract(Radian amount);
+        void add(double amount);
+        void subtract(double amount);
+
 
         bool between(Radian, Radian);
 };

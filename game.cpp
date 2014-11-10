@@ -22,16 +22,6 @@ Game::Game(int w, int h) {
 
 }
 
-// Turns the player left by amount of turnyness
-void Game::turnLeft(Radian amount) {
-    this->world.getPlayer().turnLeft(amount);
-}
-
-// Turns the player right by amount of turnyness
-void Game::turnRight(Radian amount) {
-    this->world.getPlayer().turnRight(amount);
-}
-
 void Game::redraw() {
     // Fill screen with black (eventually draw output of webcam here)
     printf("Draw Webcam (later)\n");
@@ -72,8 +62,8 @@ void Game::drawRadar() {
         printf("%f\n", i->getDistance());
         // x1 = 32 + x0
         // y1 = 32 - y1
-        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer().angle).toRad());
-        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer().angle).toRad());
+        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle).toRad());
+        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle).toRad());
         printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
         filledCircleRGBA(this->renderer,
                 radarOriginX + (32 + i->getDistance() * cos(i->getAngle().toRad())),
@@ -136,11 +126,11 @@ void Game::run() {
                             break;
                         case SDLK_LEFT:
                             printf("Turning left.\n");
-                            turnLeft(Radian(10));
+                            this->world.getPlayer()->turnLeft(Radian(10));
                             break;
                         case SDLK_RIGHT:
                             printf("Turning right.\n");
-                            turnLeft(Radian(10));
+                            this->world.getPlayer()->turnRight(Radian(10));
                             break;
                     }
             }
