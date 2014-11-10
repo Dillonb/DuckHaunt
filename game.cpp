@@ -7,6 +7,8 @@ Game::Game(int w, int h) {
     this->radarSize = w / 7;
 
     IMG_Init(IMG_INIT_PNG); //allows png rendering
+    this->spriteSurface = IMG_Load("spriteSheet.png");//load the duck sprite sheet to a surface
+    this->spriteTexture = SDL_CreateTextureFromSurface(this->renderer, this->spriteSurface);//make that surface into a texture
 
     if(!this->cap.isOpened()) return; // check if we succeeded
 
@@ -88,12 +90,18 @@ void Game::drawRadar() {
 void Game::drawDucks() {
     
     for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
-            typeNum = iDuck->getType() + 1;
-            SDL_Rect duckSrcRect = {288, 208, 64 * typeNum, 64 * typeNum};
-            SDL_Rect duckDstRect = {288, 208, 64 * typeNum, 64 * typeNum};
+            typeNum = iDuck->getType();
+            SDL_Rect duckSrcRect = { typeNum * 64, 0, 64, 64 };
 
-            typeNum = (typeNum) % 4;
-            iDuck->setType(typeNum);
+            SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
+
+            Uint32 ticks = SDL_GetTicks();
+            if (ticks % 500 == 0)
+            {
+                typeNum++;//enumerate
+                typeNum = (typeNum % 4);//max the typenum at 3
+                iDuck->setType(typeNum);
+            }
         }
 }
 

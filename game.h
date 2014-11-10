@@ -12,8 +12,10 @@ using namespace cv;
 
 class Game {
     SDL_Surface* surface = NULL;
+    SDL_Surface* spriteSurface;
     SDL_Texture* texture = NULL;
     SDL_Texture* radarTexture = NULL;
+    SDL_Texture* texture;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     int width;
