@@ -1,7 +1,8 @@
 #include "player.h"
 
 Player::Player() {
-    this->angle = Radian(60);
+    this->angle = Radian(0);
+    this->FOV = Radian(90);
 }
 
 Radian Player::getAngle() {

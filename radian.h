@@ -1,5 +1,8 @@
 #ifndef RADIAN_H
 #define RADIAN_H
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
 //this class takes a degree value
 //it stores the degree and calculate the radian
 class Radian {

@@ -13,13 +13,13 @@ Game::Game(int w, int h) {
     this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED); // draw things to screen
     printf("Created Renderer\n");
 
-    this->surface = SDL_GetWindowSurface(this->window); // 
+    this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
-    this->world.addDuck(Duck(Radian(10), 20));
-    this->world.addDuck(Duck(Radian(20), 30));
-    this->world.addDuck(Duck(Radian(30), 0));
-    this->world.addDuck(Duck(Radian(20), 40));
+    //this->world.addDuck(Duck(Radian(0), 30));
+    this->world.addDuck(Duck(Radian(90), 30));
+    //this->world.addDuck(Duck(Radian(180), 30));
+    //this->world.addDuck(Duck(Radian(270), 30));
     printf("Added all ducks\n");
 
 }
@@ -30,6 +30,7 @@ void Game::redraw() {
     //convert it to SDL_Surface
     SDL_Texture* frame=SDL_CreateTextureFromSurface(this->renderer, convertToSDLSurface(this->image));
     SDL_RenderCopy(this->renderer, frame, NULL, NULL);
+    SDL_DestroyTexture(frame);
     //render the whole thing out to 0,0 coordinate
     // SDL_BlitSurface(frame,NULL,this->surface,NULL);
     //avoid memory leaks
@@ -59,22 +60,32 @@ void Game::drawRadar() {
     // Draw the dot for the player at the center
     filledCircleRGBA(this->renderer, radarOriginX + (this->radarSize / 2), radarOriginY + (this->radarSize / 2), 2, 0xFF, 0xFF, 0xFF, 0xFF);
 
-
-
     // Draw ducks on radar
 
     for (list<Duck>::iterator i = this->world.getDuckIterator(); i != this->world.getDuckEnd(); i++) {
-        printf("%f\n", i->getDistance());
-        // x1 = 32 + x0
-        // y1 = 32 - y1
-        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
+        //printf("%f\n", i->getDistance());
+        //           Start from center   Convert from polar to cartesian r*cos(theta)   offset by player turn     rotate so 0 rad is at the top
+        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle + Radian(90)).toRad());
+        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle + Radian(90)).toRad());
+        //printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+        if (i->isVisible(*this->world.getPlayer())) {
+            red = 0x00;
+            green = 0xFF;
+            blue = 0x00;
+        }
+        else {
+            red = 0xFF;
+            green = 0x00;
+            blue = 0x00;
+        }
         filledCircleRGBA(this->renderer,
                 radarOriginX + duckX,
                 radarOriginY + duckY,
                 2,
-                0xFF, 0x00, 0x00,
+                red, green, blue,
                 0xFF);
     }
 
@@ -128,11 +139,11 @@ void Game::run() {
                             break;
                         case SDLK_LEFT:
                             printf("Turning left.\n");
-                            this->world.getPlayer()->turnLeft(Radian(10));
+                            this->world.getPlayer()->turnLeft(Radian(1));
                             break;
                         case SDLK_RIGHT:
                             printf("Turning right.\n");
-                            this->world.getPlayer()->turnRight(Radian(10));
+                            this->world.getPlayer()->turnRight(Radian(1));
                             break;
                     }
             }

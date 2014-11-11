@@ -1,6 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
-#include <math.h>
+#include <cmath>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
 #include "radian.h"
