@@ -21,7 +21,7 @@ class Radian {
         Radian operator*(Radian);
         Radian operator+(Radian);
         Radian operator-(Radian);
-        Radian operator=(Radian);
+        Radian& operator=(const Radian&);
 
         void add(Radian amount);
         void subtract(Radian amount);

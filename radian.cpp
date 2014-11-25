@@ -87,10 +87,8 @@ Radian Radian::operator/(double divisor) {
     return temp;
 }
 
-Radian Radian::operator=(Radian other) {
-    printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
+Radian& Radian::operator=(const Radian& other) {
     this->radVal = other.radVal;
-    printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
 }
 
 double Radian::toRad() {
