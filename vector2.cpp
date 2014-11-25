@@ -34,6 +34,3 @@ Vector2 Vector2::operator*(double multiplicand) {
 double Vector2::dot(Vector2 other) {
     return (this->x * other.x) + (this->y * other.y);
 }
-double Vector2::cross(Vector2) {
-    return 0; // Not implemented
-}

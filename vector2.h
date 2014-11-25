@@ -13,7 +13,6 @@ class Vector2 {
         Vector2 operator+(Vector2);
         Vector2 operator-(Vector2);
         double dot(Vector2);
-        double cross(Vector2);
 };
 
 
