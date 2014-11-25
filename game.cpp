@@ -21,13 +21,13 @@ Game::Game(int w, int h) {
     this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED); // draw things to screen
     printf("Created Renderer\n");
 
-    this->surface = SDL_GetWindowSurface(this->window); // 
+    this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
-    this->world.addDuck(Duck(Radian(10), 20));
-    this->world.addDuck(Duck(Radian(20), 30));
-    this->world.addDuck(Duck(Radian(30), 0));
-    this->world.addDuck(Duck(Radian(20), 40));
+    this->world.addDuck(Duck(Radian(0), 20));
+    this->world.addDuck(Duck(Radian(10), 30));
+    this->world.addDuck(Duck(Radian(30), 40));
+    this->world.addDuck(Duck(Radian(100), 40));
     printf("Added all ducks\n");
 
 }
@@ -59,38 +59,45 @@ void Game::redraw() {
 }
 
 void Game::drawRadar() {
-    int radarOriginX = this->width - this->radarSize;
-    int radarOriginY = 0;
+    Vector2 radarPos(this->width - this->radarSize, 0);
+    Vector2 radarOrigin(radarPos.x + (radarSize / 2), (radarSize / 2));
 
     // Draw the radar border
-    circleRGBA(this->renderer, radarOriginX + (this->radarSize / 2), radarOriginY + (this->radarSize / 2), radarSize / 2, 0xFF, 0xFF, 0xFF, 0xFF);
+    circleRGBA(this->renderer, radarPos.x + (this->radarSize / 2), radarPos.y + (this->radarSize / 2), radarSize / 2, 0xFF, 0xFF, 0xFF, 0xFF);
     // Draw the dot for the player at the center
-    filledCircleRGBA(this->renderer, radarOriginX + (this->radarSize / 2), radarOriginY + (this->radarSize / 2), 2, 0xFF, 0xFF, 0xFF, 0xFF);
+    filledCircleRGBA(this->renderer, radarOrigin.x, radarOrigin.y, 2, 0xFF, 0xFF, 0xFF, 0xFF);
 
+    Vector2 playerDirection = this->world.getPlayer()->getVector();
+
+    // Player angle
+    lineRGBA(this->renderer, radarOrigin.x, radarOrigin.y, radarOrigin.x + (radarSize / 2) * playerDirection.x, radarOrigin.y - (radarSize / 2) * playerDirection.y, 0xFF, 0xFF, 0xFF, 0xFF);
 
 
     // Draw ducks on radar
 
     for (list<Duck>::iterator i = this->world.getDuckIterator(); i != this->world.getDuckEnd(); i++) {
-        printf("(%f, %f)\n", i->position.toVector2().x, i->position.toVector2().y);
-        //double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        //double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        //printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
-        //filledCircleRGBA(this->renderer,
-                //radarOriginX + duckX,
-                //radarOriginY + duckY,
-                //2,
-                //0xFF, 0x00, 0x00,
-                //0xFF);
+        uint8_t red, green, blue;
+        if (i->isVisible(*this->world.getPlayer())) {
+            red = 0x00;
+            green = 0xFF;
+            blue = 0x00;
+        }
+        else {
+            red = 0xFF;
+            green = 0x00;
+            blue = 0x00;
+        }
+
+        filledCircleRGBA(this->renderer,
+                radarOrigin.x + i->position.toVector2().x,
+                radarOrigin.y - i->position.toVector2().y,
+                2,
+                red, green, blue,
+                0xFF);
     }
-
-
-
-
 }
 
 void Game::drawDucks() {
-    
     for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
             typeNum = iDuck->getType();
             SDL_Rect duckSrcRect = { typeNum * 64, 0, 64, 64 };

@@ -13,9 +13,12 @@ Duck::Duck(Polarcoord position) {
     this->position = position;
 }
 bool Duck::isVisible(Player p) {
-    double dotproduct = p.getVector().dot(this->position.toVector2());
-    printf("Dot product: %f\n", dotproduct);
-    return dotproduct > 0;
+    // Calculate the cutoff for the dot product of the two vectors used to calculate visibility based on the field of view.
+    double cutoff = 1 - (p.getFov().toRad() / M_PI);
+    // Calculate the dot product of the duck's position and the player's angle
+    double dotproduct = p.getVector().dot(this->position.toAngleVector2());
+    // See if the dot product is above the cutoff - if so, the duck is visible.
+    return dotproduct > cutoff;
 
 }
 

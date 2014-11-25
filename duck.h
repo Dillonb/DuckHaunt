@@ -4,6 +4,7 @@
 #include "radian.h"
 #include "polarcoord.h"
 #include "player.h"
+#include "math.h"
 
 class Duck {
     public:

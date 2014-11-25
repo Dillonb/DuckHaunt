@@ -12,7 +12,9 @@ class Polarcoord {
         Polarcoord(Radian, double);
         Polarcoord(Vector2);
         Polarcoord();
+        Polarcoord(const Polarcoord&);
 
         Vector2 toVector2();
+        Vector2 toAngleVector2();
 };
 #endif

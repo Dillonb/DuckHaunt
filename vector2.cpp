@@ -1,4 +1,6 @@
 #include "vector2.h"
+#include <cstdlib>
+#include <cstdio>
 
 Vector2::Vector2(double x, double y) {
     this->x = x;

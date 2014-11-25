@@ -92,7 +92,7 @@ Radian& Radian::operator=(const Radian& other) {
 }
 
 double Radian::toRad() {
-    printf("RADIAN VALUE: %f\n", this->radVal);
+    //printf("RADIAN VALUE: %f\n", this->radVal);
     return this->radVal;
 }
 
