@@ -1,6 +1,8 @@
 #ifndef DUCK_H
 #define DUCK_H
 
+#include <cstdio>
+#include <cstdlib>
 #include "radian.h"
 
 class Duck {

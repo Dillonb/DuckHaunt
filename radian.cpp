@@ -88,13 +88,10 @@ Radian Radian::operator/(double divisor) {
 }
 
 Radian Radian::operator=(Radian other) {
-    printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
     this->radVal = other.radVal;
-    printf("Calling radian operator=: %f %f\n", this->radVal, other.radVal);
 }
 
 double Radian::toRad() {
-    printf("RADIAN VALUE: %f\n", this->radVal);
     return this->radVal;
 }
 

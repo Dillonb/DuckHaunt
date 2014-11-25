@@ -17,13 +17,14 @@ Game::Game(int w, int h) {
     this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED); // draw things to screen
     printf("Created Renderer\n");
 
-    this->surface = SDL_GetWindowSurface(this->window); // 
+    this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
-    this->world.addDuck(Duck(Radian(10), 20));
-    this->world.addDuck(Duck(Radian(20), 30));
-    this->world.addDuck(Duck(Radian(30), 0));
-    this->world.addDuck(Duck(Radian(20), 40));
+    //this->world.addDuck(Duck(Radian(10), 20));
+    //this->world.addDuck(Duck(Radian(20), 30));
+    //this->world.addDuck(Duck(Radian(30), 10));
+    //this->world.addDuck(Duck(Radian(20), 40));
+    this->world.addDuck(Duck(Radian(90), 10));
     printf("Added all ducks\n");
 
 }
@@ -68,17 +69,32 @@ void Game::drawRadar() {
     // Draw ducks on radar
 
     for (list<Duck>::iterator i = this->world.getDuckIterator(); i != this->world.getDuckEnd(); i++) {
-        printf("%f\n", i->getDistance());
-        // x1 = 32 + x0
-        // y1 = 32 - y1
-        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
+        //printf("%f\n", i->getDistance());
+        Radian offset(0);
+        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle + offset).toRad());
+        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle + offset).toRad());
+        //printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+
+        if (i->isVisible(world.getPlayer()->getAngle(), world.getPlayer()->getFov())) {
+            //printf("Duck is visible.\n");
+            red = 0x00;
+            green = 0xFF;
+            blue = 0x00;
+        }
+        else {
+            //printf("Duck is INVISIBLE!\n");
+            red = 0xFF;
+            green = 0x00;
+            blue = 0x00;
+        }
         filledCircleRGBA(this->renderer,
                 radarOriginX + duckX,
                 radarOriginY + duckY,
-                2,
-                0xFF, 0x00, 0x00,
+                3,
+                red, green, blue,
                 0xFF);
     }
 
@@ -88,22 +104,52 @@ void Game::drawRadar() {
 }
 
 void Game::drawDucks() {
-    
     for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
-            typeNum = iDuck->getType();
-            SDL_Rect duckSrcRect = { typeNum * 64, 0, 64, 64 };
 
-            SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
+        // Only worry about drawing the duck if it's visible
+        if (iDuck->isVisible(world.getPlayer()->getAngle(), world.getPlayer()->getFov())) {
 
-            Uint32 ticks = SDL_GetTicks();
-            if (ticks % 500 == 0)
-            {
-                typeNum++;//enumerate
-                typeNum = (typeNum % 4);//max the typenum at 3
-                iDuck->setType(typeNum);
-            }
+            // Get projection vector
+            double player_x = 10 * cos(world.getPlayer()->getAngle().toRad());
+            double player_y = 10 * sin(world.getPlayer()->getAngle().toRad());
 
-            SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
+            double duck_x = iDuck->getDistance() * cos(iDuck->getAngle().toRad());
+            double duck_y = iDuck->getDistance() * sin(iDuck->getAngle().toRad());
+
+            double dotproduct = (player_x * duck_x) + (player_y * duck_y);
+            double magnitude = sqrt(player_x * player_x + player_y * player_y) * sqrt(duck_x * duck_x + duck_y * duck_y);
+
+            double projection_scalar = dotproduct / magnitude;
+
+            double proj_vector_x = player_x * projection_scalar;
+            double proj_vector_y = player_y * projection_scalar;
+
+
+            //double ortho_vector_x = proj_vector_x - duck_x;
+            //double ortho_vector_y = proj_vector_y - duck_y;
+            double ortho_vector_x = duck_x - proj_vector_x;
+            double ortho_vector_y = duck_y - proj_vector_y;
+
+            double ortho_magnitude = sqrt(pow(ortho_vector_x, 2) + pow(ortho_vector_y,2));
+
+            //printf("DUCK ORTHO VECTOR: %f %f\n", ortho_vector_x, ortho_vector_y);
+            printf("DUCK ORTHO MAGNITUDE: %f\n", ortho_magnitude);
+
+        }
+            //typeNum = iDuck->getType();
+            //SDL_Rect duckSrcRect = { typeNum * 64, 0, 64, 64 };
+
+            //SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
+
+            //Uint32 ticks = SDL_GetTicks();
+            //if (ticks % 500 == 0)
+            //{
+                //typeNum++;//enumerate
+                //typeNum = (typeNum % 4);//max the typenum at 3
+                //iDuck->setType(typeNum);
+            //}
+
+            //SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
         }
 }
 
@@ -127,11 +173,11 @@ void Game::run() {
                             break;
                         case SDLK_LEFT:
                             printf("Turning left.\n");
-                            this->world.getPlayer()->turnLeft(Radian(10));
+                            this->world.getPlayer()->turnLeft(Radian(1));
                             break;
                         case SDLK_RIGHT:
                             printf("Turning right.\n");
-                            this->world.getPlayer()->turnRight(Radian(10));
+                            this->world.getPlayer()->turnRight(Radian(1));
                             break;
                     }
             }

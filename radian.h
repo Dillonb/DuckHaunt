@@ -1,5 +1,6 @@
 #ifndef RADIAN_H
 #define RADIAN_H
+#include "math.h"
 //this class takes a degree value
 //it stores the degree and calculate the radian
 class Radian {

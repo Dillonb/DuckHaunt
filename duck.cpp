@@ -1,18 +1,21 @@
 #include "duck.h"
-#include <cstdio>
-#include <cstdlib>
-
 Duck::Duck(Radian angle, double distance) {
     this->angle = angle;
     this->distance = distance;
     this->duckType = 0;
 }
 bool Duck::isVisible(Radian playerAngle, Radian fieldOfView) {
-    double halfFov = (fieldOfView / 2).toRad();
-    double right = playerAngle.toRad() + halfFov;
-    double left = right + halfFov;
+    double player_x = cos(playerAngle.toRad());
+    double player_y = sin(playerAngle.toRad());
 
-    return (left <= this->angle.toRad() <= right);
+    double duck_x = cos(this->getAngle().toRad());
+    double duck_y = sin(this->getAngle().toRad());
+
+    double dotproduct = (player_x * duck_x) + (player_y * duck_y);
+
+    //printf("Dot product: %f\n", dotproduct);
+
+    return dotproduct > 0;
 }
 
 double Duck::getDistance() {
@@ -20,7 +23,7 @@ double Duck::getDistance() {
 }
 
 Radian Duck::getAngle() {
-    printf("Duck is %f rad\n", this->angle.toRad());
+    //printf("Duck is %f rad\n", this->angle.toRad());
     return this->angle;
 }
 
