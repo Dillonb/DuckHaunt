@@ -87,7 +87,7 @@ Radian Radian::operator/(double divisor) {
     return temp;
 }
 
-Radian Radian::operator=(Radian other) {
+Radian& Radian::operator=(const Radian& other) {
     this->radVal = other.radVal;
 }
 
@@ -108,4 +108,8 @@ void Radian::normalize() {
     while (this->radVal < 0) {
         this->radVal += 2 * M_PI;
     }
+}
+
+Vector2 Radian::toVector2() {
+    return Vector2(cos(this->radVal), sin(this->radVal));
 }

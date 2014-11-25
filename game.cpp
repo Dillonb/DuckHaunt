@@ -7,10 +7,14 @@ Game::Game(int w, int h) {
     this->radarSize = w / 7;
 
     IMG_Init(IMG_INIT_PNG); //allows png rendering
-    this->spriteSurface = IMG_Load("spriteSheet.png");//load the duck sprite sheet to a surface
+    this->spriteSurface = IMG_Load("sprites/spriteSheet.png");//load the duck sprite sheet to a surface
     this->spriteTexture = SDL_CreateTextureFromSurface(this->renderer, this->spriteSurface);//make that surface into a texture
 
-    if(!this->cap.isOpened()) return; // check if we succeeded
+    if(!this->cap.isOpened()) {
+        printf("FATAL ERROR: Failed to open webcam.\n");
+        exit(EXIT_FAILURE); // Exit with an error code.
+    }
+    printf("Test\n");
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
     printf("Created Window\n");
@@ -20,11 +24,10 @@ Game::Game(int w, int h) {
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
-    //this->world.addDuck(Duck(Radian(10), 20));
-    //this->world.addDuck(Duck(Radian(20), 30));
-    //this->world.addDuck(Duck(Radian(30), 10));
-    //this->world.addDuck(Duck(Radian(20), 40));
-    this->world.addDuck(Duck(Radian(90), 10));
+    this->world.addDuck(Duck(Radian(0), 20));
+    this->world.addDuck(Duck(Radian(10), 30));
+    this->world.addDuck(Duck(Radian(30), 40));
+    this->world.addDuck(Duck(Radian(100), 40));
     printf("Added all ducks\n");
 
 }
@@ -41,66 +44,56 @@ void Game::redraw() {
     // SDL_FreeSurface(frame);
 
     // Fill screen with black (eventually draw output of webcam here)
-    printf("Drawing Webcam\n");
+    //printf("Drawing Webcam\n");
 
     drawDucks();
-    printf("Ducks Drawn\n");
+    //printf("Ducks Drawn\n");
 
     drawRadar();
-    printf("Radar Drawn\n");
+    //printf("Radar Drawn\n");
 
     SDL_UpdateWindowSurface(this->window);
-    printf("Updated Surface\n");
+    //printf("Updated Surface\n");
 
     SDL_RenderPresent(this->renderer);
 }
 
 void Game::drawRadar() {
-    int radarOriginX = this->width - this->radarSize;
-    int radarOriginY = 0;
+    Vector2 radarPos(this->width - this->radarSize, 0);
+    Vector2 radarOrigin(radarPos.x + (radarSize / 2), (radarSize / 2));
 
     // Draw the radar border
-    circleRGBA(this->renderer, radarOriginX + (this->radarSize / 2), radarOriginY + (this->radarSize / 2), radarSize / 2, 0xFF, 0xFF, 0xFF, 0xFF);
+    circleRGBA(this->renderer, radarPos.x + (this->radarSize / 2), radarPos.y + (this->radarSize / 2), radarSize / 2, 0xFF, 0xFF, 0xFF, 0xFF);
     // Draw the dot for the player at the center
-    filledCircleRGBA(this->renderer, radarOriginX + (this->radarSize / 2), radarOriginY + (this->radarSize / 2), 2, 0xFF, 0xFF, 0xFF, 0xFF);
+    filledCircleRGBA(this->renderer, radarOrigin.x, radarOrigin.y, 2, 0xFF, 0xFF, 0xFF, 0xFF);
 
+    Vector2 playerDirection = this->world.getPlayer()->getVector();
+
+    // Player angle
+    lineRGBA(this->renderer, radarOrigin.x, radarOrigin.y, radarOrigin.x + (radarSize / 2) * playerDirection.x, radarOrigin.y - (radarSize / 2) * playerDirection.y, 0xFF, 0xFF, 0xFF, 0xFF);
 
 
     // Draw ducks on radar
 
     for (list<Duck>::iterator i = this->world.getDuckIterator(); i != this->world.getDuckEnd(); i++) {
-        //printf("%f\n", i->getDistance());
-        Radian offset(0);
-        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle + offset).toRad());
-        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle + offset).toRad());
-        //printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
-        uint8_t red;
-        uint8_t green;
-        uint8_t blue;
-
-        if (i->isVisible(world.getPlayer()->getAngle(), world.getPlayer()->getFov())) {
-            //printf("Duck is visible.\n");
+        uint8_t red, green, blue;
+        if (i->isVisible(*this->world.getPlayer())) {
             red = 0x00;
             green = 0xFF;
             blue = 0x00;
         }
         else {
-            //printf("Duck is INVISIBLE!\n");
             red = 0xFF;
             green = 0x00;
             blue = 0x00;
         }
         filledCircleRGBA(this->renderer,
-                radarOriginX + duckX,
-                radarOriginY + duckY,
-                3,
+                radarOrigin.x + i->position.toVector2().x,
+                radarOrigin.y - i->position.toVector2().y,
+                2,
                 red, green, blue,
                 0xFF);
     }
-
-
-
-
 }
 
 void Game::drawDucks() {

@@ -1,7 +1,8 @@
 #include "player.h"
 
 Player::Player() {
-    this->angle = Radian(60);
+    this->angle = Radian(0);
+    this->FOV = Radian(60);
 }
 
 Radian Player::getAngle() {
@@ -20,4 +21,9 @@ void Player::turnLeft(Radian amount) {
 void Player::turnRight(Radian amount) {
     this->angle.add(amount);
     printf("New angle: %f\n", this->angle.toRad());
+}
+
+Vector2 Player::getVector() {
+    Vector2 pvector(cos(this->angle.toRad()), sin(this->angle.toRad()));
+    return pvector;
 }

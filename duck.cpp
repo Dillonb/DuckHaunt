@@ -1,30 +1,21 @@
 #include "duck.h"
 Duck::Duck(Radian angle, double distance) {
-    this->angle = angle;
-    this->distance = distance;
+    this->position = Polarcoord();
+
+    this->position.theta = angle;
+    this->position.r = distance;
     this->duckType = 0;
 }
-bool Duck::isVisible(Radian playerAngle, Radian fieldOfView) {
-    double player_x = cos(playerAngle.toRad());
-    double player_y = sin(playerAngle.toRad());
-
-    double duck_x = cos(this->getAngle().toRad());
-    double duck_y = sin(this->getAngle().toRad());
-
-    double dotproduct = (player_x * duck_x) + (player_y * duck_y);
-
-    //printf("Dot product: %f\n", dotproduct);
-
-    return dotproduct > 0;
+Duck::Duck(Polarcoord position) {
+    this->position = position;
 }
-
-double Duck::getDistance() {
-    return this->distance;
-}
-
-Radian Duck::getAngle() {
-    //printf("Duck is %f rad\n", this->angle.toRad());
-    return this->angle;
+bool Duck::isVisible(Player p) {
+    // Calculate the cutoff for the dot product of the two vectors used to calculate visibility based on the field of view.
+    double cutoff = 1 - (p.getFov().toRad() / M_PI);
+    // Calculate the dot product of the duck's position and the player's angle
+    double dotproduct = p.getVector().dot(this->position.toAngleVector2());
+    // See if the dot product is above the cutoff - if so, the duck is visible.
+    return dotproduct > cutoff;
 }
 
 int Duck::getType() {
