@@ -110,3 +110,7 @@ void Radian::normalize() {
         this->radVal += 2 * M_PI;
     }
 }
+
+Vector2 Radian::toVector2() {
+    return Vector2(cos(this->radVal), sin(this->radVal));
+}

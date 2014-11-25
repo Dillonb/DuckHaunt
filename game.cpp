@@ -7,10 +7,14 @@ Game::Game(int w, int h) {
     this->radarSize = w / 7;
 
     IMG_Init(IMG_INIT_PNG); //allows png rendering
-    this->spriteSurface = IMG_Load("spriteSheet.png");//load the duck sprite sheet to a surface
+    this->spriteSurface = IMG_Load("sprites/spriteSheet.png");//load the duck sprite sheet to a surface
     this->spriteTexture = SDL_CreateTextureFromSurface(this->renderer, this->spriteSurface);//make that surface into a texture
 
-    if(!this->cap.isOpened()) return; // check if we succeeded
+    if(!this->cap.isOpened()) {
+        printf("FATAL ERROR: Failed to open webcam.\n");
+        exit(EXIT_FAILURE); // Exit with an error code.
+    }
+    printf("Test\n");
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
     printf("Created Window\n");
@@ -40,16 +44,16 @@ void Game::redraw() {
     // SDL_FreeSurface(frame);
 
     // Fill screen with black (eventually draw output of webcam here)
-    printf("Drawing Webcam\n");
+    //printf("Drawing Webcam\n");
 
     drawDucks();
-    printf("Ducks Drawn\n");
+    //printf("Ducks Drawn\n");
 
     drawRadar();
-    printf("Radar Drawn\n");
+    //printf("Radar Drawn\n");
 
     SDL_UpdateWindowSurface(this->window);
-    printf("Updated Surface\n");
+    //printf("Updated Surface\n");
 
     SDL_RenderPresent(this->renderer);
 }
@@ -68,18 +72,16 @@ void Game::drawRadar() {
     // Draw ducks on radar
 
     for (list<Duck>::iterator i = this->world.getDuckIterator(); i != this->world.getDuckEnd(); i++) {
-        printf("%f\n", i->getDistance());
-        // x1 = 32 + x0
-        // y1 = 32 - y1
-        double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle).toRad());
-        printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
-        filledCircleRGBA(this->renderer,
-                radarOriginX + duckX,
-                radarOriginY + duckY,
-                2,
-                0xFF, 0x00, 0x00,
-                0xFF);
+        printf("(%f, %f)\n", i->position.toVector2().x, i->position.toVector2().y);
+        //double duckX = (radarSize / 2) + i->getDistance() * cos((i->getAngle() + this->world.getPlayer()->angle).toRad());
+        //double duckY = (radarSize / 2) - i->getDistance() * sin((i->getAngle() + this->world.getPlayer()->angle).toRad());
+        //printf("At %f rad, %f distance: (%f, %f)\n", i->getAngle().toRad(), i->getDistance(), duckX, duckY);
+        //filledCircleRGBA(this->renderer,
+                //radarOriginX + duckX,
+                //radarOriginY + duckY,
+                //2,
+                //0xFF, 0x00, 0x00,
+                //0xFF);
     }
 
 

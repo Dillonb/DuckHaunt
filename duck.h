@@ -2,18 +2,17 @@
 #define DUCK_H
 
 #include "radian.h"
+#include "polarcoord.h"
+#include "player.h"
 
 class Duck {
-    Radian angle;
-    double distance;
-    int duckType;
-
     public:
+        Polarcoord position;
+        int duckType;
         Duck(Radian, double);
-        bool isVisible(Radian, Radian);
+        Duck(Polarcoord);
+        bool isVisible(Player);
 
-        double getDistance();
-        Radian getAngle();
         int getType();
         void setType(int);
 };

@@ -3,25 +3,20 @@
 #include <cstdlib>
 
 Duck::Duck(Radian angle, double distance) {
-    this->angle = angle;
-    this->distance = distance;
+    this->position = Polarcoord();
+
+    this->position.theta = angle;
+    this->position.r = distance;
     this->duckType = 0;
 }
-bool Duck::isVisible(Radian playerAngle, Radian fieldOfView) {
-    double halfFov = (fieldOfView / 2).toRad();
-    double right = playerAngle.toRad() + halfFov;
-    double left = right + halfFov;
-
-    return (left <= this->angle.toRad() <= right);
+Duck::Duck(Polarcoord position) {
+    this->position = position;
 }
+bool Duck::isVisible(Player p) {
+    double dotproduct = p.getVector().dot(this->position.toVector2());
+    printf("Dot product: %f\n", dotproduct);
+    return dotproduct > 0;
 
-double Duck::getDistance() {
-    return this->distance;
-}
-
-Radian Duck::getAngle() {
-    printf("Duck is %f rad\n", this->angle.toRad());
-    return this->angle;
 }
 
 int Duck::getType() {

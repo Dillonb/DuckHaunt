@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include "radian.h"
+#include "vector2.h"
+#include "math.h"
 #include <cstdlib>
 #include <cstdio>
 
@@ -15,6 +17,7 @@ class Player {
         void turnLeft(Radian);
         Radian getAngle();
         Radian getFov();
+        Vector2 getVector();
 };
 
 #endif

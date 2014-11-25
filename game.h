@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 #include <math.h>
+#include <cstdio>
+#include <cstdlib>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
 #include "SDL2/SDL_image.h"
