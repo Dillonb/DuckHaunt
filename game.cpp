@@ -100,34 +100,7 @@ void Game::drawDucks() {
     for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
 
         // Only worry about drawing the duck if it's visible
-        if (iDuck->isVisible(world.getPlayer()->getAngle(), world.getPlayer()->getFov())) {
-
-            // Get projection vector
-            double player_x = 10 * cos(world.getPlayer()->getAngle().toRad());
-            double player_y = 10 * sin(world.getPlayer()->getAngle().toRad());
-
-            double duck_x = iDuck->getDistance() * cos(iDuck->getAngle().toRad());
-            double duck_y = iDuck->getDistance() * sin(iDuck->getAngle().toRad());
-
-            double dotproduct = (player_x * duck_x) + (player_y * duck_y);
-            double magnitude = sqrt(player_x * player_x + player_y * player_y) * sqrt(duck_x * duck_x + duck_y * duck_y);
-
-            double projection_scalar = dotproduct / magnitude;
-
-            double proj_vector_x = player_x * projection_scalar;
-            double proj_vector_y = player_y * projection_scalar;
-
-
-            //double ortho_vector_x = proj_vector_x - duck_x;
-            //double ortho_vector_y = proj_vector_y - duck_y;
-            double ortho_vector_x = duck_x - proj_vector_x;
-            double ortho_vector_y = duck_y - proj_vector_y;
-
-            double ortho_magnitude = sqrt(pow(ortho_vector_x, 2) + pow(ortho_vector_y,2));
-
-            //printf("DUCK ORTHO VECTOR: %f %f\n", ortho_vector_x, ortho_vector_y);
-            printf("DUCK ORTHO MAGNITUDE: %f\n", ortho_magnitude);
-
+        if (iDuck->isVisible(*world.getPlayer())) {
         }
             //typeNum = iDuck->getType();
             //SDL_Rect duckSrcRect = { typeNum * 64, 0, 64, 64 };
