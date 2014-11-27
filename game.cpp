@@ -11,7 +11,6 @@ Game::Game(int w, int h) {
         printf("FATAL ERROR: Failed to open webcam.\n");
         exit(EXIT_FAILURE); // Exit with an error code.
     }
-    printf("Test\n");
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
     printf("Created Window\n");
@@ -29,7 +28,7 @@ Game::Game(int w, int h) {
     //this->world.addDuck(Duck(Radian(30), 40));
     //this->world.addDuck(Duck(Radian(100), 40));
     printf("Added all ducks\n");
-
+    this->lastTicks = SDL_GetTicks();
 }
 
 void Game::redraw() {
@@ -56,6 +55,11 @@ void Game::redraw() {
     //printf("Updated Surface\n");
 
     SDL_RenderPresent(this->renderer);
+
+
+    double timeBetweenTicks = SDL_GetTicks() - this->lastTicks;
+    printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
+    this->lastTicks = SDL_GetTicks();
 }
 
 void Game::drawRadar() {

@@ -21,6 +21,7 @@ class Game {
     SDL_Texture* spriteTexture;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
+    Uint32 lastTicks;
     int width;
     int height;
     double radarSize;
