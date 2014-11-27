@@ -2,7 +2,7 @@
 
 Radian::Radian(double val) {
     //1 degree is 0.0174532925 radians
-    radVal = val * 0.0174532925;
+    this->radVal = val * 0.0174532925;
     normalize();
 }
 
@@ -96,7 +96,7 @@ double Radian::toDegrees() {
 }
 
 // Normalizes a radian value - if it's more than 2PI, keep subtracting 2PI until it's not
-// If it's less than 0, keep addding 2PI until it's not
+// If it's less than 0, keep adding 2PI until it's not
 void Radian::normalize() {
     while (this->radVal >= 2 * M_PI) {
         this->radVal -= 2 * M_PI;

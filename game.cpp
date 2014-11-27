@@ -31,10 +31,6 @@ void Game::redraw() {
     SDL_Texture* frame=SDL_CreateTextureFromSurface(this->renderer, convertToSDLSurface(this->image));
     SDL_RenderCopy(this->renderer, frame, NULL, NULL);
     SDL_DestroyTexture(frame);
-    //render the whole thing out to 0,0 coordinate
-    // SDL_BlitSurface(frame,NULL,this->surface,NULL);
-    //avoid memory leaks
-    // SDL_FreeSurface(frame);
 
     // Fill screen with black (eventually draw output of webcam here)
     printf("Drawing Webcam\n");

@@ -8,10 +8,9 @@
 class Radian {
     double radVal;
 
-
-    void normalize();
-
     public:
+        void normalize();
+
         Radian(double); // Construct from degrees
         Radian(const Radian&); // Copy constructor
         Radian();
@@ -30,9 +29,6 @@ class Radian {
         void subtract(Radian amount);
         void add(double amount);
         void subtract(double amount);
-
-
-        bool between(Radian, Radian);
 };
 
 #endif
