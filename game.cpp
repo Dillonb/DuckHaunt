@@ -118,8 +118,7 @@ void Game::drawDucks() {
 
             //SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
 
-            SDL_Rect duckDstRect = {50, this->width / 2, 64, 64};
-
+            SDL_Rect duckDstRect = {(this->width / 2) + (rejection.y * 30), this->height / 2, 64, 64};
 
             duck->setFrame((duck->getFrame()+1) % 4);
             int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
