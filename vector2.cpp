@@ -1,6 +1,4 @@
 #include "vector2.h"
-#include <cstdlib>
-#include <cstdio>
 
 Vector2::Vector2(double x, double y) {
     this->x = x;
@@ -35,4 +33,8 @@ Vector2 Vector2::operator*(double multiplicand) {
 }
 double Vector2::dot(Vector2 other) {
     return (this->x * other.x) + (this->y * other.y);
+}
+
+double Vector2::magnitude() {
+    return sqrt(pow(this->x,2) + pow(this->y,2));
 }
