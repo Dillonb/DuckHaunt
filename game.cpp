@@ -6,9 +6,6 @@ Game::Game(int w, int h) {
     this->height = h;
     this->radarSize = w / 7;
 
-    IMG_Init(IMG_INIT_PNG); //allows png rendering
-    this->spriteSurface = IMG_Load("sprites/spriteSheet.png");//load the duck sprite sheet to a surface
-    this->spriteTexture = SDL_CreateTextureFromSurface(this->renderer, this->spriteSurface);//make that surface into a texture
 
     if(!this->cap.isOpened()) {
         printf("FATAL ERROR: Failed to open webcam.\n");
@@ -21,13 +18,16 @@ Game::Game(int w, int h) {
     this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED); // draw things to screen
     printf("Created Renderer\n");
 
+    IMG_Init(IMG_INIT_PNG); //allows png rendering
+
+    this->spriteTexture = IMG_LoadTexture(this->renderer, "sprites/spriteSheet.png"); // Load the spritesheet directly into a texture
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
     this->world.addDuck(Duck(Radian(0), 20));
-    this->world.addDuck(Duck(Radian(10), 30));
-    this->world.addDuck(Duck(Radian(30), 40));
-    this->world.addDuck(Duck(Radian(100), 40));
+    //this->world.addDuck(Duck(Radian(10), 30));
+    //this->world.addDuck(Duck(Radian(30), 40));
+    //this->world.addDuck(Duck(Radian(100), 40));
     printf("Added all ducks\n");
 
 }
@@ -62,8 +62,8 @@ void Game::drawRadar() {
     Vector2 radarPos(this->width - this->radarSize, 0);
     Vector2 radarOrigin(radarPos.x + (radarSize / 2), (radarSize / 2));
 
-    // Draw the radar border
-    circleRGBA(this->renderer, radarPos.x + (this->radarSize / 2), radarPos.y + (this->radarSize / 2), radarSize / 2, 0xFF, 0xFF, 0xFF, 0xFF);
+    // Draw the radar circle
+    filledCircleRGBA(this->renderer, radarPos.x + (this->radarSize / 2), radarPos.y + (this->radarSize / 2), radarSize / 2, 0x00, 0x00, 0x00, 0x99);
     // Draw the dot for the player at the center
     filledCircleRGBA(this->renderer, radarOrigin.x, radarOrigin.y, 2, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -97,26 +97,37 @@ void Game::drawRadar() {
 }
 
 void Game::drawDucks() {
-    for (list<Duck>::iterator iDuck = this->world.getDuckIterator(); iDuck != this->world.getDuckEnd(); iDuck++) {
+    for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
 
         // Only worry about drawing the duck if it's visible
-        if (iDuck->isVisible(*world.getPlayer())) {
-        }
+        if (duck->isVisible(*world.getPlayer())) {
             //typeNum = iDuck->getType();
-            //SDL_Rect duckSrcRect = { typeNum * 64, 0, 64, 64 };
+            SDL_Rect duckSrcRect = { duck->getFrame() * 64, 0, 64, 64 };
+
+            // a = Duck
+            // b = Player
+            //((a . b) / (b . b)) * b
+
+            Vector2 duckVector = duck->position.toVector2();
+            Vector2 playerVector = this->world.getPlayer()->getVector();
+
+            Vector2 projection = playerVector * (duckVector.dot(playerVector) / playerVector.dot(playerVector));
+            Vector2 rejection = duckVector - projection;
+
+            printf("[%f, %f]\n", rejection.x, rejection.y);
 
             //SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
 
-            //Uint32 ticks = SDL_GetTicks();
-            //if (ticks % 500 == 0)
-            //{
-                //typeNum++;//enumerate
-                //typeNum = (typeNum % 4);//max the typenum at 3
-                //iDuck->setType(typeNum);
-            //}
+            SDL_Rect duckDstRect = {50, this->width / 2, 64, 64};
 
-            //SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
+
+            duck->setFrame((duck->getFrame()+1) % 4);
+            int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
+
+            if (result < 0)
+                printf("Calling RenderCopy: %s\n", SDL_GetError());
         }
+    }
 }
 
 void Game::run() {

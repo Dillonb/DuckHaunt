@@ -4,7 +4,7 @@ Duck::Duck(Radian angle, double distance) {
 
     this->position.theta = angle;
     this->position.r = distance;
-    this->duckType = 0;
+    this->frame = 0;
 }
 Duck::Duck(Polarcoord position) {
     this->position = position;
@@ -18,10 +18,10 @@ bool Duck::isVisible(Player p) {
     return dotproduct > cutoff;
 }
 
-int Duck::getType() {
-    return this->duckType;
+int Duck::getFrame() {
+    return this->frame;
 }
 
-void Duck::setType(int newType) {
-    this->duckType = newType;
+void Duck::setFrame(int newFrame) {
+    this->frame = newFrame;
 }

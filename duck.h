@@ -11,13 +11,13 @@
 class Duck {
     public:
         Polarcoord position;
-        int duckType;
+        int frame;
         Duck(Radian, double);
         Duck(Polarcoord);
         bool isVisible(Player);
 
-        int getType();
-        void setType(int);
+        int getFrame();
+        void setFrame(int);
 };
 
 #endif
