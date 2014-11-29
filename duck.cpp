@@ -5,6 +5,9 @@ Duck::Duck(Radian angle, double distance) {
     this->position.theta = angle;
     this->position.r = distance;
     this->frame = 0;
+    this->progressDelay = 2000; //2 seconds flat rate atm, in the constructor for different speed ducks l8r
+    this->progress = 1; //default 1 but could later set ducks starting at different locations
+    this->lastTick = SDL_GetTicks();
 }
 Duck::Duck(Polarcoord position) {
     this->position = position;
@@ -24,4 +27,19 @@ int Duck::getFrame() {
 
 void Duck::setFrame(int newFrame) {
     this->frame = newFrame;
+}
+
+int Duck::getProgress() {
+    //this is where the delay get checked and the duck is decided to move
+    int currentTick = SDL_GetTicks();
+    int tickDiff = currentTick - this->lastTick;
+    printf("%i\n", tickDiff);
+    if (tickDiff > progressDelay)
+    {
+        printf("prog++");
+        this->progress++;
+        this->lastTick = currentTick;
+    }
+
+    return this->progress;
 }

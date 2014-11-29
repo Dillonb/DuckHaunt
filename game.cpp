@@ -58,7 +58,7 @@ void Game::redraw() {
 
 
     double timeBetweenTicks = SDL_GetTicks() - this->lastTicks;
-    printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
+    //printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
     this->lastTicks = SDL_GetTicks();
 }
 
@@ -101,11 +101,14 @@ void Game::drawRadar() {
 }
 
 void Game::drawDucks() {
+
     for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
 
         // Only worry about drawing the duck if it's visible
         if (duck->isVisible(*world.getPlayer())) {
             //typeNum = iDuck->getType();
+            int duckProg = duck->getProgress();
+            
             SDL_Rect duckSrcRect = { duck->getFrame() * 64, 0, 64, 64 };
 
             // a = Duck
@@ -122,9 +125,10 @@ void Game::drawDucks() {
 
             //SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
 
-            SDL_Rect duckDstRect = {(this->width / 2) + (rejection.y * 30), this->height / 2, 64, 64};
+            SDL_Rect duckDstRect = {(this->width / 2) + (rejection.y * 30), this->height / 2, 64 * duckProg, 64 * duckProg};
 
             duck->setFrame((duck->getFrame()+1) % 4);
+            
             int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
 
             if (result < 0)
