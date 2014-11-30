@@ -57,7 +57,7 @@ void Duck::update() {
             this->moveCounter -= 2000;
             this->position.r -= this->speed;
         }
-        if (this->position.r <= 1) {
+        if (this->position.r <= ATTACK_DIST) {
             // Duck dies.
             this->status = attackedPlayer;
         }

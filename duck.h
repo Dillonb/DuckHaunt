@@ -8,7 +8,7 @@
 #include "player.h"
 #include "math.h"
 #include "SDL2/SDL.h"
-
+#define ATTACK_DIST 4
 
 typedef enum duckStatus_t {
     alive,
@@ -35,6 +35,7 @@ class Duck {
         void nextFrame();
         void update();
         void shot();
+
 
         static bool compare_distance(const Duck& first, const Duck& second) {
             return first.position.r < second.position.r;
