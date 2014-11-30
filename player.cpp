@@ -36,3 +36,13 @@ void Player::loseHealth() {
 int Player::getHealth() {
     return health;
 }
+
+int Player::getScore() {
+    return this->score;
+}
+void Player::setScore(int newScore) {
+    this->score = newScore;
+}
+void Player::addScore(int addend) {
+    this->score += addend;
+}

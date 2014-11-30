@@ -33,6 +33,10 @@ class Duck {
         int getFrame();
         void nextFrame();
         void update();
+
+        static bool compare_distance(const Duck& first, const Duck& second) {
+            return first.position.r < second.position.r;
+        }
 };
 
 #endif

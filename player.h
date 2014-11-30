@@ -22,6 +22,12 @@ class Player {
         int health;
         void loseHealth();
         int getHealth();
+
+
+        int score;
+        int getScore();
+        void setScore(int);
+        void addScore(int);
 };
 
 #endif

@@ -230,6 +230,9 @@ void Game::run() {
                 duck = this->world.ducks.erase(duck);
             }
         }
+        // Ensure that the closer ducks are first in the list
+        this->world.ducks.sort(Duck::compare_distance);
+        this->world.ducks.reverse();
         this->redraw();
     }
 }
