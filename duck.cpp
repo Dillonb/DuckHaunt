@@ -5,6 +5,9 @@ Duck::Duck(Radian angle, double distance) {
     this->position.theta = angle;
     this->position.r = distance;
     this->frame = 0;
+    this->lastTick = SDL_GetTicks();
+    this->moveCounter = 0;
+    this->speed = 2;
 }
 Duck::Duck(Polarcoord position) {
     this->position = position;
@@ -24,6 +27,29 @@ int Duck::getFrame() {
     return this->frame;
 }
 
-void Duck::setFrame(int newFrame) {
-    this->frame = newFrame;
+void Duck::nextFrame() {
+    this->frame = (this->frame + 1) % 4;
+}
+
+void Duck::update() {
+    int currentTick = SDL_GetTicks();
+    int tickDiff = currentTick - this->lastTick;
+    this->lastTick = currentTick;
+    printf("%i\n", tickDiff);
+
+    this->moveCounter += tickDiff;
+    this->frameCounter += tickDiff;
+    
+    if ( this->frameCounter > 500 )
+    {
+        this->frameCounter -= 500;
+        this->nextFrame();
+    }
+    
+    if( this->moveCounter > 2000)
+    {
+        this->moveCounter -= 2000;
+        this->position.r -= this->speed;
+    }
+
 }

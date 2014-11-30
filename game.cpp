@@ -103,7 +103,7 @@ void Game::drawRadar() {
 
 void Game::drawDucks() {
     for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
-
+        duck->update();
         // Only worry about drawing the duck if it's visible
         if (duck->isVisible(*world.getPlayer())) {
             //typeNum = iDuck->getType();
@@ -174,8 +174,8 @@ void Game::drawDucks() {
                 (this->height / 2) - (duckSize.y / 2),
                 duckSize.x,
                 duckSize.y};
-
-            duck->setFrame((duck->getFrame()+1) % 4);
+            //now taken care of in duck->update()
+            //duck->setFrame((duck->getFrame()+1) % 4);
             int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
 
             if (result < 0)

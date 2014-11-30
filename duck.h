@@ -7,17 +7,23 @@
 #include "polarcoord.h"
 #include "player.h"
 #include "math.h"
+#include "SDL2/SDL.h"
 
 class Duck {
     public:
         Polarcoord position;
         int frame;
+        double speed;
+        int lastTick;
+        int moveCounter;
+        int frameCounter;
         Duck(Radian, double);
         Duck(Polarcoord);
         bool isVisible(Player);
 
         int getFrame();
-        void setFrame(int);
+        void nextFrame();
+        void update();
 };
 
 #endif
