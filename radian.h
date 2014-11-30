@@ -5,11 +5,8 @@
 //this class takes a degree value
 //it stores the degree and calculate the radian
 class Radian {
-
-
-    void normalize();
-
     public:
+        void normalize();
         double radVal;
         Radian(double); // Construct from degrees
         Radian(const Radian&); // Copy constructor

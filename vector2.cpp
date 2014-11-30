@@ -38,3 +38,10 @@ double Vector2::dot(Vector2 other) {
 double Vector2::magnitude() {
     return sqrt(pow(this->x,2) + pow(this->y,2));
 }
+
+int Vector2::rightOf(Vector2 other) {
+    Vector2 temp(-1 * this->y, this->x); // Rotate this vector 90 degrees counter clockwise
+    double result = other.dot(temp);
+    return (result > 0) ? 1 : ((result < 0) ? -1 : 0);
+
+}

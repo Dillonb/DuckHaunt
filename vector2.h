@@ -17,6 +17,7 @@ class Vector2 {
         Vector2 operator-(Vector2);
         double dot(Vector2);
         double magnitude();
+        int rightOf(Vector2);
 };
 
 

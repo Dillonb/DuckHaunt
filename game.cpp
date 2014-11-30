@@ -154,9 +154,7 @@ void Game::drawDucks() {
             duckDistance *= (this->width / 2);
 
             // Ensures the sign is correct
-            Polarcoord rejectionCoord(rejection);
-            printf("Angle: %f\n", rejectionCoord.theta.radVal);
-            duckDistance *= (rejectionCoord.theta.radVal > 0) ? 1 : ((rejectionCoord.theta.radVal < 0) ? -1 : 0);
+            duckDistance *= duckVector.rightOf(playerVector);
 
 
 
@@ -164,8 +162,6 @@ void Game::drawDucks() {
 
             //printf("[%f, %f]\n", rejection.x, rejection.y);
             printf("Projection magnitude: %f\n Rejection magnitude: %f\n", projection.magnitude(), rejection.magnitude());
-
-            //SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
 
             double scaleFactor = 1000 * (1.f / pow(duck->position.r, 2));
 
