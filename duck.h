@@ -9,6 +9,13 @@
 #include "math.h"
 #include "SDL2/SDL.h"
 
+
+typedef enum duckStatus_t {
+    alive,
+    killedByPlayer,
+    attackedPlayer,
+} duckStatus;
+
 class Duck {
     public:
         Polarcoord position;
@@ -20,6 +27,8 @@ class Duck {
         Duck(Radian, double);
         Duck(Polarcoord);
         bool isVisible(Player);
+
+        duckStatus status;
 
         int getFrame();
         void nextFrame();

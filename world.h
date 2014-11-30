@@ -9,10 +9,10 @@
 using namespace std;
 
 class World {
-    list<Duck> ducks;
     Player player;
 
     public:
+        list<Duck> ducks;
         World();
 
         void addDuck(Duck);
