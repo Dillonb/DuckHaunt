@@ -142,7 +142,7 @@ void Game::drawDucks() {
             // Rejection vector (a2 on the image) of the duck
             Vector2 rejection = duckVector - projection;
 
-            printf("Rejection: [%f,%f]\n", rejection.x, rejection.y);
+            //printf("Rejection: [%f,%f]\n", rejection.x, rejection.y);
 
             //printf("Magnitude of edge of fov rejection: %f\nMagnitude of duck rejection: %f\n", edgeRejection.magnitude(), rejection.magnitude());
 
@@ -158,14 +158,14 @@ void Game::drawDucks() {
 
 
 
-            printf("Duck distance: %f\n", duckDistance);
+            //printf("Duck distance: %f\n", duckDistance);
 
             //printf("[%f, %f]\n", rejection.x, rejection.y);
-            printf("Projection magnitude: %f\n Rejection magnitude: %f\n", projection.magnitude(), rejection.magnitude());
+            //printf("Projection magnitude: %f\n Rejection magnitude: %f\n", projection.magnitude(), rejection.magnitude());
 
             double scaleFactor = 1000 * (1.f / pow(duck->position.r, 2));
 
-            printf("********Scale factor: %f\n", scaleFactor);
+            //printf("********Scale factor: %f\n", scaleFactor);
 
             Vector2 duckSize(scaleFactor * 64.f, scaleFactor * 64.f);
 
