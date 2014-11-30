@@ -34,6 +34,12 @@ void Duck::nextFrame() {
     this->frame = (this->frame + 1) % 4;
 }
 
+void Duck::shot() {
+    this->status = killedByPlayer;
+    this->frame = 5;
+    this->frameCounter = 0;
+}
+
 void Duck::update() {
     int currentTick = SDL_GetTicks();
     int tickDiff = currentTick - this->lastTick;
@@ -54,6 +60,10 @@ void Duck::update() {
         if (this->position.r <= 1) {
             // Duck dies.
             this->status = attackedPlayer;
+        }
+    }else if(this->status == killedByPlayer) {
+        if (this->frameCounter > 500) {
+            this-> status = dead;
         }
     }
 }

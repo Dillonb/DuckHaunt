@@ -14,6 +14,7 @@ typedef enum duckStatus_t {
     alive,
     killedByPlayer,
     attackedPlayer,
+    dead,
 } duckStatus;
 
 class Duck {
