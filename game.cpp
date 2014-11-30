@@ -23,10 +23,10 @@ Game::Game(int w, int h) {
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
-    this->world.addDuck(Duck(Radian(0), 20));
-    //this->world.addDuck(Duck(Radian(10), 30));
-    //this->world.addDuck(Duck(Radian(30), 40));
-    //this->world.addDuck(Duck(Radian(100), 40));
+    this->world.addDuck(Duck(Radian(0), 10));
+    this->world.addDuck(Duck(Radian(10), 30));
+    this->world.addDuck(Duck(Radian(30), 20));
+    this->world.addDuck(Duck(Radian(100), 40));
     printf("Added all ducks\n");
     this->lastTicks = SDL_GetTicks();
 }
@@ -37,8 +37,9 @@ void Game::redraw() {
     //convert it to SDL_Surface
     SDL_Texture* frame=SDL_CreateTextureFromSurface(this->renderer, convertToSDLSurface(this->image));
     SDL_RenderCopy(this->renderer, frame, NULL, NULL);
+    SDL_DestroyTexture(frame); // No memory leaks here.
     //render the whole thing out to 0,0 coordinate
-     //SDL_BlitSurface(frame,NULL,this->surface,NULL);
+    //SDL_BlitSurface(frame,NULL,this->surface,NULL);
     //avoid memory leaks
     // SDL_FreeSurface(frame);
 
@@ -119,7 +120,9 @@ void Game::drawDucks() {
 
             // Polar coordinate of the edge of the player's FOV at the distance of the duck
             Polarcoord edgeFov = duck->position;
-            edgeFov.theta = edgeFov.theta - (this->world.getPlayer()->FOV / 2);
+            edgeFov.theta = this->world.getPlayer()->angle + (this->world.getPlayer()->FOV / 2);
+
+            //printf("Player FOV: %f\nPlayer FOV / 2: %f\nedgeFOV.theta: %f\nplayerAngle: %f\nDuck angle: %f\n", this->world.getPlayer()->FOV.radVal, (this->world.getPlayer()->FOV / 2).radVal, edgeFov.theta.radVal, this->world.getPlayer()->angle.radVal, duck->position.theta.radVal);
 
             // Vector representation of the edge of the player's FOV
             Vector2 edgeFovVector = edgeFov.toVector2();
@@ -139,14 +142,23 @@ void Game::drawDucks() {
             // Rejection vector (a2 on the image) of the duck
             Vector2 rejection = duckVector - projection;
 
-            printf("Magnitude of edge of fov rejection: %f\nMagnitude of duck rejection: %f\n", edgeRejection.magnitude(), rejection.magnitude());
+            printf("Rejection: [%f,%f]\n", rejection.x, rejection.y);
+
+            //printf("Magnitude of edge of fov rejection: %f\nMagnitude of duck rejection: %f\n", edgeRejection.magnitude(), rejection.magnitude());
 
 
             // A ratio between the two rejection vectors to determine where on the screen the duck should go
             double duckDistance = rejection.magnitude() / edgeRejection.magnitude();
 
             // Multiply it by half the width of the screen to get an actual pixel value
-            duckDistance *= this->width;
+            duckDistance *= (this->width / 2);
+
+            // Ensures the sign is correct
+            Polarcoord rejectionCoord(rejection);
+            printf("Angle: %f\n", rejectionCoord.theta.radVal);
+            duckDistance *= (rejectionCoord.theta.radVal > 0) ? 1 : ((rejectionCoord.theta.radVal < 0) ? -1 : 0);
+
+
 
             printf("Duck distance: %f\n", duckDistance);
 
@@ -155,12 +167,14 @@ void Game::drawDucks() {
 
             //SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
 
-            double scaleFactor = 3;
+            double scaleFactor = 1000 * (1.f / pow(duck->position.r, 2));
+
+            printf("********Scale factor: %f\n", scaleFactor);
 
             Vector2 duckSize(scaleFactor * 64.f, scaleFactor * 64.f);
 
             SDL_Rect duckDstRect = {
-                ((this->width / 2) + (duckDistance))/* - (duckSize.x / 2)*/,
+                ((this->width / 2) + (duckDistance)) - (duckSize.x / 2),
                 (this->height / 2) - (duckSize.y / 2),
                 duckSize.x,
                 duckSize.y};
