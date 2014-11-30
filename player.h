@@ -18,6 +18,10 @@ class Player {
         Radian getAngle();
         Radian getFov();
         Vector2 getVector();
+
+        int health;
+        void loseHealth();
+        int getHealth();
 };
 
 #endif
