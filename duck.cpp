@@ -65,5 +65,8 @@ void Duck::update() {
         if (this->frameCounter > 500) {
             this-> status = dead;
         }
+    }else if (this->status == attackedPlayer)
+    {
+        this->status = dead;
     }
 }

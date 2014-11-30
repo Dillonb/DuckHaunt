@@ -229,15 +229,17 @@ void Game::run() {
                 if (duck->status == attackedPlayer) {
                     // Lower player health
                     this->world.getPlayer()->loseHealth();
+                    
                     if (this->world.getPlayer()->getHealth() <= 0) {
                         // Player has died.
                     }
                 }
                 else if (duck->status == killedByPlayer) {
                     // Raise player score
+                }else if (duck->status == dead){
+                    // Remove duck from list
+                    duck = this->world.ducks.erase(duck);
                 }
-                // Remove duck from list
-                duck = this->world.ducks.erase(duck);
             }
         }
         // Ensure that the closer ducks are first in the list
