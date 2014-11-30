@@ -52,6 +52,8 @@ void Game::redraw() {
     drawRadar();
     //printf("Radar Drawn\n");
 
+    drawHealth();
+
     SDL_UpdateWindowSurface(this->window);
     //printf("Updated Surface\n");
 
@@ -99,6 +101,14 @@ void Game::drawRadar() {
                 red, green, blue,
                 0xFF);
     }
+}
+
+void Game::drawHealth() {
+    int playerHealth = (this->world.getPlayer()->health);
+    SDL_Rect healthSrcRect = { playerHealth * 64, 64, 64, 64 };
+    SDL_Rect healthDstRect = { 0, 0, 128, 128 };
+    //draw
+    int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &healthSrcRect, &healthDstRect); 
 }
 
 void Game::drawDucks() {

@@ -36,6 +36,8 @@ class Game {
 
     void drawRadar();
 
+    void drawHealth();
+
     void drawDucks();
 
     SDL_Surface* convertToSDLSurface(const Mat&);
