@@ -103,7 +103,6 @@ void Game::drawRadar() {
 
 void Game::drawDucks() {
     for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
-        duck->update();
         // Only worry about drawing the duck if it's visible
         if (duck->isVisible(*world.getPlayer())) {
             //typeNum = iDuck->getType();
@@ -211,6 +210,20 @@ void Game::run() {
                             this->world.getPlayer()->turnRight(Radian(1));
                             break;
                     }
+            }
+        }
+        for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
+            duck->update();
+            // Logic for when ducks die
+            if (duck->status != alive) {
+                if (duck->status == attackedPlayer) {
+                    // Lower player health
+                }
+                else if (duck->status == killedByPlayer) {
+                    // Raise player score
+                }
+                // Remove duck from list
+                duck = this->world.ducks.erase(duck);
             }
         }
         this->redraw();

@@ -9,9 +9,11 @@ Duck::Duck(Radian angle, double distance) {
     this->moveCounter = 0;
     this->frameCounter = 0;
     this->speed = 2;
+
+    this->status = alive;
 }
 Duck::Duck(Polarcoord position) {
-    this->position = position;
+    Duck(position.theta, position.r);
 }
 bool Duck::isVisible(Player p) {
     // Calculate the cutoff for the dot product of the two vectors used to calculate visibility based on the field of view.
@@ -38,17 +40,20 @@ void Duck::update() {
     this->lastTick = currentTick;
 
     this->moveCounter += tickDiff;
-
     this->frameCounter += tickDiff;
 
-    if (this->frameCounter > 500) {
-        this->frameCounter -= 500;
-        this->nextFrame();
+    if (this->status == alive) {
+        if (this->frameCounter > 500) {
+            this->frameCounter -= 500;
+            this->nextFrame();
+        }
+        if (this->moveCounter > 2000) {
+            this->moveCounter -= 2000;
+            this->position.r -= this->speed;
+        }
+        if (this->position.r <= 1) {
+            // Duck dies.
+            this->status = attackedPlayer;
+        }
     }
-
-    if (this->moveCounter > 2000) {
-        this->moveCounter -= 2000;
-        this->position.r -= this->speed;
-    }
-
 }
