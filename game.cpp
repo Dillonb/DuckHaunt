@@ -218,6 +218,10 @@ void Game::run() {
             if (duck->status != alive) {
                 if (duck->status == attackedPlayer) {
                     // Lower player health
+                    this->world.getPlayer()->loseHealth();
+                    if (this->world.getPlayer()->getHealth() <= 0) {
+                        // Player has died.
+                    }
                 }
                 else if (duck->status == killedByPlayer) {
                     // Raise player score
