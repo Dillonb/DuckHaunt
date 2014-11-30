@@ -8,7 +8,7 @@
 #include "player.h"
 #include "math.h"
 #include "SDL2/SDL.h"
-#define ATTACK_DIST 4
+#define ATTACK_DIST 6
 
 typedef enum duckStatus_t {
     alive,
