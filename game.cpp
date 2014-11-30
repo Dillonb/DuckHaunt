@@ -101,6 +101,14 @@ void Game::drawRadar() {
     }
 }
 
+void Game::drawHealth() {
+    int playerHealth = (this->world.getPlayer()->health);
+    SDL_Rect healthSrcRect = { playerHealth * 64, 64, 64, 64 };
+    SDL_Rect healthDstRect = { 0, 0, 64, 64 };
+    //draw
+    int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &healthSrcRect, &healthDstRect); 
+}
+
 void Game::drawDucks() {
     for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
         duck->update();
