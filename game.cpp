@@ -38,7 +38,7 @@ void Game::redraw() {
     SDL_Texture* frame=SDL_CreateTextureFromSurface(this->renderer, convertToSDLSurface(this->image));
     SDL_RenderCopy(this->renderer, frame, NULL, NULL);
     //render the whole thing out to 0,0 coordinate
-    // SDL_BlitSurface(frame,NULL,this->surface,NULL);
+     //SDL_BlitSurface(frame,NULL,this->surface,NULL);
     //avoid memory leaks
     // SDL_FreeSurface(frame);
 
@@ -112,17 +112,58 @@ void Game::drawDucks() {
             // b = Player
             //((a . b) / (b . b)) * b
 
+            // Vector representation of the position of the duck
             Vector2 duckVector = duck->position.toVector2();
+            // vector representation of the player's angle
             Vector2 playerVector = this->world.getPlayer()->getVector();
 
+            // Polar coordinate of the edge of the player's FOV at the distance of the duck
+            Polarcoord edgeFov = duck->position;
+            edgeFov.theta = edgeFov.theta - (this->world.getPlayer()->FOV / 2);
+
+            // Vector representation of the edge of the player's FOV
+            Vector2 edgeFovVector = edgeFov.toVector2();
+
+            // Refer to the below image for the following variables:
+            // Where a is the duck and b is the player:
+            // https://upload.wikimedia.org/wikipedia/commons/9/98/Projection_and_rejection.png
+            //
+            // Projection vector (a1 on the image) of the edge of the FOV
+            Vector2 edgeProjection = playerVector * (edgeFovVector.dot(playerVector) / playerVector.dot(playerVector));
+            // Rejection vector (a2 on the image) of the edge of the FOV (the maximum size the duck rejection vector can be)
+            Vector2 edgeRejection = edgeFovVector - edgeProjection;
+
+
+            // Projection vector (a1 on the image) of the duck
             Vector2 projection = playerVector * (duckVector.dot(playerVector) / playerVector.dot(playerVector));
+            // Rejection vector (a2 on the image) of the duck
             Vector2 rejection = duckVector - projection;
 
-            printf("[%f, %f]\n", rejection.x, rejection.y);
+            printf("Magnitude of edge of fov rejection: %f\nMagnitude of duck rejection: %f\n", edgeRejection.magnitude(), rejection.magnitude());
+
+
+            // A ratio between the two rejection vectors to determine where on the screen the duck should go
+            double duckDistance = rejection.magnitude() / edgeRejection.magnitude();
+
+            // Multiply it by half the width of the screen to get an actual pixel value
+            duckDistance *= this->width;
+
+            printf("Duck distance: %f\n", duckDistance);
+
+            //printf("[%f, %f]\n", rejection.x, rejection.y);
+            printf("Projection magnitude: %f\n Rejection magnitude: %f\n", projection.magnitude(), rejection.magnitude());
 
             //SDL_Rect duckDstRect = {288, 208, 64 * (typeNum + 1), 64 * (typeNum + 1)};
 
-            SDL_Rect duckDstRect = {(this->width / 2) + (rejection.y * 30), this->height / 2, 64, 64};
+            double scaleFactor = 3;
+
+            Vector2 duckSize(scaleFactor * 64.f, scaleFactor * 64.f);
+
+            SDL_Rect duckDstRect = {
+                ((this->width / 2) + (duckDistance))/* - (duckSize.x / 2)*/,
+                (this->height / 2) - (duckSize.y / 2),
+                duckSize.x,
+                duckSize.y};
 
             duck->setFrame((duck->getFrame()+1) % 4);
             int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);

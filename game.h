@@ -10,6 +10,7 @@
 #include "radian.h"
 #include "duck.h"
 #include "world.h"
+#include "polarcoord.h"
 #include "opencv2/opencv.hpp"
 
 using namespace cv;
