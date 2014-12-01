@@ -9,6 +9,7 @@ Duck::Duck(Radian angle, double distance) {
     this->moveCounter = 0;
     this->frameCounter = 0;
     this->speed = 2;
+    this->scoreAdded = false;
 
     this->status = alive;
 }
@@ -64,7 +65,7 @@ void Duck::update() {
         }
     }
     else if(this->status == killedByPlayer) {
-        if (this->frameCounter > 500) {
+        if (this->frameCounter > 1000) {
             this->status = dead;
         }
     }

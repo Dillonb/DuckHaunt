@@ -11,7 +11,7 @@ Compiling
 
 Ensure that you have SDL v2 installed.
 ```
-sudo pacman -S sdl2 opencv sdl2_gfx vtk sdl2_image
+sudo pacman -S sdl2 opencv sdl2_gfx vtk sdl2_image sdl2_ttf
 
 sudo apt-get install libsdl2-dev
 ```

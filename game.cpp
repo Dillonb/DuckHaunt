@@ -23,6 +23,9 @@ Game::Game(int w, int h) {
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
+    TTF_Init();
+    this->eightbitwonder = TTF_OpenFont("font.ttf", 18);
+
     this->world.addDuck(Duck(Radian(0), 10));
     this->world.addDuck(Duck(Radian(10), 30));
     this->world.addDuck(Duck(Radian(30), 20));
@@ -52,7 +55,10 @@ void Game::redraw() {
     drawRadar();
     //printf("Radar Drawn\n");
 
+    drawScore();
+
     drawHealth();
+
 
     SDL_UpdateWindowSurface(this->window);
     //printf("Updated Surface\n");
@@ -111,11 +117,36 @@ void Game::drawHealth() {
     int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &healthSrcRect, &healthDstRect);
 }
 
+void Game::drawScore() {
+
+    // Convert the score to a string
+    char buffer[50];
+    sprintf(buffer, "SCORE %i", this->world.getPlayer()->score);
+
+    SDL_Color color = { 0x00, 0x00, 0x00 };
+    SDL_Surface* surface = TTF_RenderText_Solid(this->eightbitwonder, buffer, color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+    int w, h;
+    SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+    printf("w: %i, h: %i\n", w, h);
+
+    SDL_Rect srcRect = {0, 0, w, h};
+    SDL_Rect dstRect = {16, 64, w, h};
+
+    SDL_RenderCopy(this->renderer,
+            texture,
+            NULL,
+            &dstRect);
+
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+}
+
 void Game::drawDucks() {
     for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
         // Only worry about drawing the duck if it's visible
         if (duck->isVisible(*world.getPlayer())) {
-            //typeNum = iDuck->getType();
             SDL_Rect duckSrcRect;
             if (duck->status == killedByPlayer) {
                 // Draw explosion if the duck was killed by the player
@@ -240,6 +271,7 @@ void Game::run() {
                 printf("Magnitude of rejection: %f\n", rejection.magnitude());
                 if (rejection.magnitude() <= 2) {
                     duck->status = killedByPlayer;
+                    duck->frameCounter = 0;
                 }
             }
 
@@ -253,8 +285,10 @@ void Game::run() {
                         // Player has died.
                     }
                 }
-                else if (duck->status == killedByPlayer) {
+                else if (duck->status == killedByPlayer && !duck->scoreAdded) {
                     // Raise player score
+                    this->world.getPlayer()->addScore(duck->speed * 100);
+                    duck->scoreAdded = true;
                 }else if (duck->status == dead){
                     // Remove duck from list
                     duck = this->world.ducks.erase(duck);

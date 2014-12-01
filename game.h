@@ -5,8 +5,9 @@
 #include <cstdlib>
 #include <zlib.h>
 #include "SDL2/SDL.h"
-#include "SDL2/SDL2_gfxPrimitives.h"
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_ttf.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
 #include "radian.h"
 #include "duck.h"
 #include "world.h"
@@ -22,6 +23,7 @@ class Game {
     SDL_Texture* spriteTexture;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
+    TTF_Font* eightbitwonder = NULL;
     Uint32 lastTicks;
     int width;
     int height;
@@ -39,6 +41,8 @@ class Game {
     void drawHealth();
 
     void drawDucks();
+
+    void drawScore();
 
     SDL_Surface* convertToSDLSurface(const Mat&);
 

@@ -36,6 +36,8 @@ class Duck {
         void update();
         void shot();
 
+        bool scoreAdded;
+
 
         static bool compare_distance(const Duck& first, const Duck& second) {
             return first.position.r < second.position.r;
