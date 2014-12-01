@@ -45,3 +45,9 @@ int Vector2::rightOf(Vector2 other) {
     return (result > 0) ? 1 : ((result < 0) ? -1 : 0);
 
 }
+// Returns the projection vector of this onto other
+Vector2 Vector2::project(Vector2 other) {
+    // this = duck
+    // other = player
+    return other * (this->dot(other) / other.dot(other));
+}
