@@ -10,10 +10,16 @@ Compiling
 Ensure that you have SDL v2 installed.
 
 // ARCH DEV
+
 sudo pacman -S sdl2 opencv sdl2_gfx vtk sdl2_image sdl2_mixer sdl2_ttf
 
+
+
 // DEBIAN DEV - update me please
+
 sudo apt-get install libsdl2-dev
+
+
 
 // PI
 sudo pacman -Syu
