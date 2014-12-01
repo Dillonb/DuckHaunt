@@ -35,6 +35,7 @@ class Game {
     SDL_Texture* backgroundTexture = NULL;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
+    SDL_Texture* crosshairTexture;
     TTF_Font* eightbitwonder = NULL;
     Uint32 lastTicks;
     Uint32 gameStartTicks;
