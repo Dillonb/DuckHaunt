@@ -56,6 +56,18 @@ Game::Game(int w, int h) {
     this->lastTicks = SDL_GetTicks();
     this->gameStartTicks = SDL_GetTicks();
 }
+Game::~Game() {
+    SDL_DestroyTexture(this->spriteTexture);
+    SDL_DestroyTexture(this->backgroundTexture);
+    SDL_DestroyTexture(this->titleScreenTexture);
+    SDL_FreeSurface(this->surface);
+    SDL_DestroyTexture(this->texture);
+    SDL_DestroyTexture(this->radarTexture);
+    TTF_CloseFont(this->eightbitwonder);
+
+    SDL_DestroyRenderer(this->renderer);
+    SDL_DestroyWindow(this->window);
+}
 
 void Game::redraw() {
     //this->cap >> this->image; // get a new frame from camera

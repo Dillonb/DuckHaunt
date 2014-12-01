@@ -65,6 +65,7 @@ class Game {
 
     public:
         Game(int, int);
+        ~Game();
         int run();
 };
 #endif
