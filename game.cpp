@@ -1,16 +1,16 @@
 #include "game.h"
 
 Game::Game(int w, int h) {
-    this->cap = VideoCapture(0);
+    //this->cap = VideoCapture(0);
     this->width = w;
     this->height = h;
     this->radarSize = w / 7;
 
 
-    if(!this->cap.isOpened()) {
-        printf("FATAL ERROR: Failed to open webcam.\n");
-        exit(EXIT_FAILURE); // Exit with an error code.
-    }
+    //if(!this->cap.isOpened()) {
+        //printf("FATAL ERROR: Failed to open webcam.\n");
+        //exit(EXIT_FAILURE); // Exit with an error code.
+    //}
 
     this->window = SDL_CreateWindow("Duck Haunt", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN);
     printf("Created Window\n");
@@ -32,21 +32,24 @@ Game::Game(int w, int h) {
     this->world.addDuck(Duck(Radian(100), 40));
     printf("Added all ducks\n");
     this->lastTicks = SDL_GetTicks();
+    this->gameStartTicks = SDL_GetTicks();
 }
 
 void Game::redraw() {
-    this->cap >> this->image; // get a new frame from camera
+    //this->cap >> this->image; // get a new frame from camera
 
     //convert it to SDL_Surface
-    SDL_Texture* frame=SDL_CreateTextureFromSurface(this->renderer, convertToSDLSurface(this->image));
-    SDL_RenderCopy(this->renderer, frame, NULL, NULL);
-    SDL_DestroyTexture(frame); // No memory leaks here.
+    //SDL_Texture* frame=SDL_CreateTextureFromSurface(this->renderer, convertToSDLSurface(this->image));
+    //SDL_RenderCopy(this->renderer, frame, NULL, NULL);
+    //SDL_DestroyTexture(frame); // No memory leaks here.
     //render the whole thing out to 0,0 coordinate
     //SDL_BlitSurface(frame,NULL,this->surface,NULL);
     //avoid memory leaks
     // SDL_FreeSurface(frame);
 
-    // Fill screen with black (eventually draw output of webcam here)
+    // Fill screen with white (eventually draw scrolling background here)
+    boxRGBA(this->renderer, 0, 0, this->width, this->height, 0xFF, 0xFF, 0xFF, 0xFF);
+
     //printf("Drawing Webcam\n");
 
     drawDucks();
@@ -232,8 +235,9 @@ void Game::drawDucks() {
     }
 }
 
-void Game::run() {
+int Game::run() {
     bool quit = false;
+    bool restart = false;
     SDL_Event e;
     while (!quit) {
         SDL_Delay(10); // Wait 100ms before trying again when the stack of events becomes empty
@@ -300,6 +304,10 @@ void Game::run() {
         this->world.ducks.reverse();
         this->redraw();
     }
+    if (restart) {
+        return EXIT_RESTART;
+    }
+    return EXIT_QUIT;
 }
 
 SDL_Surface* Game::convertToSDLSurface(const Mat& img){

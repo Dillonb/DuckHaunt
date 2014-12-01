@@ -6,5 +6,9 @@ using namespace std;
 
 int main(int argc, char** argv) {
     Game game(640,480);
-    game.run();
+    int exitStatus;
+
+    do {
+        exitStatus = game.run();
+    } while (exitStatus == EXIT_RESTART);
 }

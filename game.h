@@ -14,6 +14,9 @@
 #include "polarcoord.h"
 #include "opencv2/opencv.hpp"
 
+#define EXIT_RESTART 1
+#define EXIT_QUIT 2
+
 using namespace cv;
 
 class Game {
@@ -25,6 +28,7 @@ class Game {
     SDL_Renderer* renderer = NULL;
     TTF_Font* eightbitwonder = NULL;
     Uint32 lastTicks;
+    Uint32 gameStartTicks;
     int width;
     int height;
     double radarSize;
@@ -48,6 +52,6 @@ class Game {
 
     public:
         Game(int, int);
-        void run();
+        int run();
 };
 #endif
