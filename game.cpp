@@ -1,25 +1,34 @@
 #include "game.h"
+#include <wiringPi.h>
 
 Game::Game(int w, int h) {
+    wiringPiSetup ();
+    pinMode (TRIGGER_PIN, INPUT); // trigger
+    pinMode (LEFT_PIN, INPUT); // trigger
+    pinMode (RIGHT_PIN, INPUT); // trigger
+    // pinMode (1, OUTPUT);
+    // pinMode (1, OUTPUT);
+    // pinMode (1, OUTPUT);
+    // pinMode (1, OUTPUT);
+    // pinMode (1, OUTPUT);
     // printf("%i music - %i \n", MIX_INIT_MP3, Mix_Init(MIX_INIT_MP3)); //http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ){
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
 
-    //Load sound effects
-    Mix_Chunk *laser;
-    laser = Mix_LoadWAV( "./sound/Laser.wav" );//http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
-    if( laser == NULL ) printf( "LOAD FAILED: laser sound effect. Error: %s\n", Mix_GetError() );
+    Laser = Mix_LoadWAV( "./sound/Laser.wav" );//http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
+    if( Laser == NULL ) printf( "LOAD FAILED: Laser sound effect. Error: %s\n", Mix_GetError() );
 
-    // Mix_Music *trigger;
-    // Mix_Music *bg;
-    // Mix_Music *death;
-    // Mix_Music *duck;
+    GameOver = Mix_LoadWAV( "./sound/GameOver1.wav" );//http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
+    if( GameOver == NULL ) printf( "LOAD FAILED: GameOver sound effect. Error: %s\n", Mix_GetError() );
 
-    // bg=Mix_LoadWAV("sound/GameOver1.wav");
-    Mix_PlayChannel( -1, laser, 0 );
+    DeadDuck = Mix_LoadWAV( "./sound/DeadDuck.wav" );//http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
+    if( DeadDuck == NULL ) printf( "LOAD FAILED: DeadDuck sound effect. Error: %s\n", Mix_GetError() );
 
-    //this->cap = VideoCapture(0);
+    bg = Mix_LoadWAV( "./sound/Ghostbusters.wav" );//http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
+    if( bg == NULL ) printf( "LOAD FAILED: bg sound effect. Error: %s\n", Mix_GetError() );
+
+
     this->width = w;
     this->height = h;
     this->radarSize = w / 7;
@@ -58,6 +67,10 @@ Game::Game(int w, int h) {
     this->gameStartTicks = SDL_GetTicks();
 }
 Game::~Game() {
+    Mix_FreeChunk(Laser);
+    Mix_FreeChunk(GameOver);
+    Mix_FreeChunk(DeadDuck);
+    Mix_FreeChunk(bg);
     SDL_DestroyTexture(this->spriteTexture);
     SDL_DestroyTexture(this->backgroundTexture);
     SDL_DestroyTexture(this->titleScreenTexture);
@@ -332,21 +345,21 @@ int Game::run() {
             quit = true;
         }
         // Fritz - turn left pressed
-        if (keystate[SDL_SCANCODE_LEFT]) {
+        if (keystate[SDL_SCANCODE_LEFT] || digitalRead(LEFT_PIN) ){
             if (this->state == game) {
                 printf("Turning left.\n");
                 this->world.getPlayer()->turnLeft(Radian(1));
             }
         }
         // Fritz - turn right pressed
-        if (keystate[SDL_SCANCODE_RIGHT]) {
+        if (keystate[SDL_SCANCODE_RIGHT] || digitalRead(RIGHT_PIN)){
             if (this->state == game) {
                 printf("Turning right.\n");
                 this->world.getPlayer()->turnRight(Radian(1));
             }
         }
         // Fritz - trigger pulled
-        if (keystate[SDL_SCANCODE_SPACE]) {
+        if (keystate[SDL_SCANCODE_SPACE] || digitalRead(TRIGGER_PIN) ){
             if (this->state == gameOver) {
                 restart = true;
                 quit = true;
@@ -418,6 +431,8 @@ int Game::run() {
 
                 // Fritz - trigger pulled
                 if (keystate[SDL_SCANCODE_SPACE]) {
+                    Mix_PlayChannel( -1, Laser, 0 );
+
                     //printf("****************SPACE IS HELD DOWN******************\n");
                     Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
                     //printf("Magnitude of rejection: %f\n", rejection.magnitude());
@@ -438,11 +453,14 @@ int Game::run() {
                             // Player has died.
                             // Fritz - player died
                             this->state = gameOver;
+                            Mix_PlayChannel( -1, GameOver, 0 );
+
                         }
                     }
                     else if (duck->status == killedByPlayer && !duck->scoreAdded) {
                         // Raise player score
                         // Fritz - Duck died
+                        Mix_PlayChannel( -1, DeadDuck, 0 );
                         this->world.getPlayer()->addScore(duck->speed * 100);
                         duck->scoreAdded = true;
                     }else if (duck->status == dead){

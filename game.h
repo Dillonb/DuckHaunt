@@ -18,6 +18,10 @@
 #define EXIT_RESTART 1
 #define EXIT_QUIT 2
 
+#define TRIGGER_PIN 8
+#define RIGHT_PIN 9
+#define LEFT_PIN 7
+
 //using namespace cv;
 
 typedef enum gameState_t {
@@ -49,6 +53,10 @@ class Game {
     //Mat edges;
     //Mat image;
     //VideoCapture cap;
+    Mix_Chunk *Laser;
+    Mix_Chunk *GameOver;
+    Mix_Chunk *DeadDuck;
+    Mix_Chunk *bg;
 
     gameState state;
 
