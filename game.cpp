@@ -44,6 +44,7 @@ Game::Game(int w, int h) {
     this->titleScreenTexture = IMG_LoadTexture(this->renderer, "sprites/title.png");
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
+    this->crosshairTexture = IMG_LoadTexture(this->renderer, "sprites/crosshair.png");
 
     TTF_Init();
     this->eightbitwonder = TTF_OpenFont("font.ttf", 18);
@@ -63,6 +64,7 @@ Game::~Game() {
     SDL_FreeSurface(this->surface);
     SDL_DestroyTexture(this->texture);
     SDL_DestroyTexture(this->radarTexture);
+    SDL_DestroyTexture(this->crosshairTexture);
     TTF_CloseFont(this->eightbitwonder);
 
     SDL_DestroyRenderer(this->renderer);
@@ -103,6 +105,10 @@ void Game::redraw() {
         drawScore();
 
         drawHealth();
+
+        SDL_Rect crosshairDstRect = {this->width/2 - 32, this->height / 2 - 32, 64, 64};
+
+        SDL_RenderCopy(this->renderer, this->crosshairTexture, NULL, &crosshairDstRect);
     }
 
     if (this->state == titleScreen) {
