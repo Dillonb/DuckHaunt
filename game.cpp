@@ -23,6 +23,8 @@ Game::Game(int w, int h) {
 
     this->spriteTexture = IMG_LoadTexture(this->renderer, "sprites/spriteSheet.png"); // Load the spritesheet directly into a texture
     this->titleScreenTexture = IMG_LoadTexture(this->renderer, "sprites/title.png");
+    //TODO: UNCOMMENT THIS ONCE THE TEXTURE EXISTS
+    //this->gameOverScreenTexture = IMG_LoadTexture(this->renderer, "sprites/gameover.png");
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
@@ -69,6 +71,11 @@ void Game::redraw() {
     if (this->state == titleScreen) {
         SDL_RenderCopy(this->renderer, this->titleScreenTexture, NULL, NULL);
     }
+
+    //TODO: UNCOMMENT THIS ONCE THE TEXTURE EXISTS
+    //if (this->state == gameOver) {
+        //SDL_RenderCopy(this->renderer, this->gameOverScreenTexture, NULL, NULL);
+    //}
 
 
     SDL_UpdateWindowSurface(this->window);
@@ -275,6 +282,12 @@ int Game::run() {
                                 this->world.getPlayer()->turnRight(Radian(4));
                             }
                             break;
+                        case SDLK_SPACE:
+                            if (this->state == gameOver) {
+                                restart = true;
+                                quit = true;
+                            }
+                            break;
                     }
             }
         }
@@ -325,7 +338,7 @@ int Game::run() {
 
                         if (this->world.getPlayer()->getHealth() <= 0) {
                             // Player has died.
-                            // Set game state to game over
+                            this->state = gameOver;
                         }
                     }
                     else if (duck->status == killedByPlayer && !duck->scoreAdded) {

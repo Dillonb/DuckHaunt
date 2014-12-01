@@ -5,10 +5,10 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    Game game(640,480);
     int exitStatus;
 
     do {
+        Game game(640,480);
         exitStatus = game.run();
     } while (exitStatus == EXIT_RESTART);
 }
