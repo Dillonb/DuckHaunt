@@ -31,7 +31,6 @@ class Game {
     SDL_Texture* texture = NULL;
     SDL_Texture* radarTexture = NULL;
     SDL_Texture* titleScreenTexture = NULL;
-    SDL_Texture* gameOverScreenTexture = NULL;
     SDL_Texture* spriteTexture;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;

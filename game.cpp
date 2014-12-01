@@ -41,8 +41,6 @@ Game::Game(int w, int h) {
 
     this->spriteTexture = IMG_LoadTexture(this->renderer, "sprites/spriteSheet.png"); // Load the spritesheet directly into a texture
     this->titleScreenTexture = IMG_LoadTexture(this->renderer, "sprites/title.png");
-    //TODO: UNCOMMENT THIS ONCE THE TEXTURE EXISTS
-    //this->gameOverScreenTexture = IMG_LoadTexture(this->renderer, "sprites/gameover.png");
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
@@ -90,10 +88,36 @@ void Game::redraw() {
         SDL_RenderCopy(this->renderer, this->titleScreenTexture, NULL, NULL);
     }
 
-    //TODO: UNCOMMENT THIS ONCE THE TEXTURE EXISTS
-    //if (this->state == gameOver) {
+    if (this->state == gameOver) {
         //SDL_RenderCopy(this->renderer, this->gameOverScreenTexture, NULL, NULL);
-    //}
+        boxRGBA(this->renderer, 0, 0, this->width, this->height, 0x00, 0x00, 0x00, 0xFF);
+        SDL_Rect srcRect = {64 * 5, 0, 64, 64};
+        SDL_Rect dstRect = {this->width / 2 - 128, this->height / 2 - 128, 256, 256};
+        int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &srcRect, &dstRect);
+
+
+
+        char buffer[50];
+        sprintf(buffer, "SCORE %i", this->world.getPlayer()->score);
+
+        SDL_Color color = { 0xFF, 0x00, 0x00 };
+        SDL_Surface* surface = TTF_RenderText_Solid(this->eightbitwonder, buffer, color);
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+        int w, h;
+        SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+        //printf("w: %i, h: %i\n", w, h);
+
+        SDL_Rect txtDstRect = {this->width / 2 - w / 2, this->height / 2 - h / 2 + 100, w, h};
+
+        SDL_RenderCopy(this->renderer,
+                texture,
+                NULL,
+                &txtDstRect);
+
+        SDL_DestroyTexture(texture);
+        SDL_FreeSurface(surface);
+    }
 
 
     SDL_UpdateWindowSurface(this->window);
@@ -273,43 +297,70 @@ int Game::run() {
     this->state = titleScreen;
     SDL_Event e;
     while (!quit) {
+        SDL_PumpEvents();
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
         SDL_Delay(10); // Wait 100ms before trying again when the stack of events becomes empty
 
-        while (SDL_PollEvent(&e) != 0) { // Pull events from the stack until we can't anymore
-            // Loop through each type of event
-            switch(e.type) {
-                case SDL_QUIT:
-                    quit = true;
-                    break;
-                case SDL_KEYDOWN:
-                    // A key was pressed, switch for which key
-                    switch(e.key.keysym.sym) {
-                        case SDLK_ESCAPE: // Esc
-                            quit = true; // Quit the game
-                            break;
-                        case SDLK_LEFT:
-                            if (this->state == game) {
-                                printf("Turning left.\n");
-                                this->world.getPlayer()->turnLeft(Radian(4));
-                            }
-                            break;
-                        case SDLK_RIGHT:
-                            if (this->state == game) {
-                                printf("Turning right.\n");
-                                this->world.getPlayer()->turnRight(Radian(4));
-                            }
-                            break;
-                        case SDLK_SPACE:
-                            if (this->state == gameOver) {
-                                restart = true;
-                                quit = true;
-                            }
-                            break;
-                    }
+        if (keystate[SDL_SCANCODE_ESCAPE]) {
+            quit = true;
+        }
+        // Fritz - turn left pressed
+        if (keystate[SDL_SCANCODE_LEFT]) {
+            if (this->state == game) {
+                printf("Turning left.\n");
+                this->world.getPlayer()->turnLeft(Radian(1));
             }
         }
+        // Fritz - turn right pressed
+        if (keystate[SDL_SCANCODE_RIGHT]) {
+            if (this->state == game) {
+                printf("Turning right.\n");
+                this->world.getPlayer()->turnRight(Radian(1));
+            }
+        }
+        // Fritz - trigger pulled
+        if (keystate[SDL_SCANCODE_SPACE]) {
+            if (this->state == gameOver) {
+                restart = true;
+                quit = true;
+            }
+        }
+
+        //while (SDL_PollEvent(&e) != 0) { // Pull events from the stack until we can't anymore
+             ////Loop through each type of event
+            //switch(e.type) {
+                //case SDL_QUIT:
+                    //quit = true;
+                    //break;
+                //case SDL_KEYDOWN:
+                     ////A key was pressed, switch for which key
+                    //switch(e.key.keysym.sym) {
+                        //case SDLK_ESCAPE: // Esc
+                            //quit = true; // Quit the game
+                            //break;
+                        //case SDLK_LEFT:
+                            //if (this->state == game) {
+                                //printf("Turning left.\n");
+                                //this->world.getPlayer()->turnLeft(Radian(4));
+                            //}
+                            //break;
+                        //case SDLK_RIGHT:
+                            //if (this->state == game) {
+                                //printf("Turning right.\n");
+                                //this->world.getPlayer()->turnRight(Radian(4));
+                            //}
+                            //break;
+                        //case SDLK_SPACE:
+                            //if (this->state == gameOver) {
+                                //restart = true;
+                                //quit = true;
+                            //}
+                            //break;
+                    //}
+            //}
+        //}
         if (this->state == titleScreen) {
+                // Fritz - trigger pulled
             if (keystate[SDL_SCANCODE_SPACE]) {
                 this->state = game;
             }
@@ -338,6 +389,7 @@ int Game::run() {
             for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
                 duck->update();
 
+                // Fritz - trigger pulled
                 if (keystate[SDL_SCANCODE_SPACE]) {
                     //printf("****************SPACE IS HELD DOWN******************\n");
                     Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
@@ -352,15 +404,18 @@ int Game::run() {
                 if (duck->status != alive) {
                     if (duck->status == attackedPlayer) {
                         // Lower player health
+                        // Fritz - Player hurt
                         this->world.getPlayer()->loseHealth();
 
                         if (this->world.getPlayer()->getHealth() <= 0) {
                             // Player has died.
+                            // Fritz - player died
                             this->state = gameOver;
                         }
                     }
                     else if (duck->status == killedByPlayer && !duck->scoreAdded) {
                         // Raise player score
+                        // Fritz - Duck died
                         this->world.getPlayer()->addScore(duck->speed * 100);
                         duck->scoreAdded = true;
                     }else if (duck->status == dead){
