@@ -1,6 +1,24 @@
 #include "game.h"
 
 Game::Game(int w, int h) {
+    // printf("%i music - %i \n", MIX_INIT_MP3, Mix_Init(MIX_INIT_MP3)); //http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ){
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+    }
+
+    //Load sound effects
+    Mix_Chunk *laser;
+    laser = Mix_LoadWAV( "./sound/Laser.wav" );//http://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer_frame.html
+    if( laser == NULL ) printf( "LOAD FAILED: laser sound effect. Error: %s\n", Mix_GetError() );
+
+    // Mix_Music *trigger;
+    // Mix_Music *bg;
+    // Mix_Music *death;
+    // Mix_Music *duck;
+
+    // bg=Mix_LoadWAV("sound/GameOver1.wav"); 
+    Mix_PlayChannel( -1, laser, 0 );
+
     //this->cap = VideoCapture(0);
     this->width = w;
     this->height = h;
