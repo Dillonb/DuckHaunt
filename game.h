@@ -13,12 +13,12 @@
 #include "duck.h"
 #include "world.h"
 #include "polarcoord.h"
-#include "opencv2/opencv.hpp"
+//#include "opencv2/opencv.hpp"
 
 #define EXIT_RESTART 1
 #define EXIT_QUIT 2
 
-using namespace cv;
+//using namespace cv;
 
 typedef enum gameState_t {
     titleScreen,
@@ -32,6 +32,7 @@ class Game {
     SDL_Texture* radarTexture = NULL;
     SDL_Texture* titleScreenTexture = NULL;
     SDL_Texture* spriteTexture;
+    SDL_Texture* backgroundTexture = NULL;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     TTF_Font* eightbitwonder = NULL;
@@ -44,9 +45,9 @@ class Game {
     int typeNum;
     int frameCount;
     int duckCounter;
-    Mat edges;
-    Mat image;
-    VideoCapture cap;
+    //Mat edges;
+    //Mat image;
+    //VideoCapture cap;
 
     gameState state;
 
@@ -60,7 +61,7 @@ class Game {
 
     void drawScore();
 
-    SDL_Surface* convertToSDLSurface(const Mat&);
+    //SDL_Surface* convertToSDLSurface(const Mat&);
 
     public:
         Game(int, int);

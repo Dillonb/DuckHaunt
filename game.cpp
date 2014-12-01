@@ -16,7 +16,7 @@ Game::Game(int w, int h) {
     // Mix_Music *death;
     // Mix_Music *duck;
 
-    // bg=Mix_LoadWAV("sound/GameOver1.wav"); 
+    // bg=Mix_LoadWAV("sound/GameOver1.wav");
     Mix_PlayChannel( -1, laser, 0 );
 
     //this->cap = VideoCapture(0);
@@ -40,6 +40,7 @@ Game::Game(int w, int h) {
     IMG_Init(IMG_INIT_PNG); //allows png rendering
 
     this->spriteTexture = IMG_LoadTexture(this->renderer, "sprites/spriteSheet.png"); // Load the spritesheet directly into a texture
+    this->backgroundTexture = IMG_LoadTexture(this->renderer, "sprites/background.png"); // Load background image into a texture
     this->titleScreenTexture = IMG_LoadTexture(this->renderer, "sprites/title.png");
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
@@ -70,6 +71,14 @@ void Game::redraw() {
     if (this->state == game) {
         // Fill screen with white (eventually draw scrolling background here)
         boxRGBA(this->renderer, 0, 0, this->width, this->height, 0xFF, 0xFF, 0xFF, 0xFF);
+
+        SDL_Rect dstRect1;
+        SDL_Rect dstRect2;
+
+        dstRect1 = (SDL_Rect){this->world.getPlayer()->getAngle().toDegrees(), 0, 960, 480};
+
+        //SDL_RenderCopy(this->renderer, this->backgroundTexture, NULL, &dstRect1);
+        //SDL_RenderCopy(this->renderer, this->backgroundTexture, NULL, dstRect2);
 
         //printf("Drawing Webcam\n");
 
@@ -394,7 +403,7 @@ int Game::run() {
                     //printf("****************SPACE IS HELD DOWN******************\n");
                     Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
                     //printf("Magnitude of rejection: %f\n", rejection.magnitude());
-                    if (rejection.magnitude() <= 2 && duck->status != killedByPlayer && duck->status != dead) {
+                    if (rejection.magnitude() <= 2 && duck->isVisible(*this->world.getPlayer()) && duck->status != killedByPlayer && duck->status != dead) {
                         duck->status = killedByPlayer;
                         duck->frameCounter = 0;
                     }
@@ -438,6 +447,7 @@ int Game::run() {
     return EXIT_QUIT;
 }
 
+/*
 SDL_Surface* Game::convertToSDLSurface(const Mat& img){
     //"convert" it to older format, because I found conversation for that, and it's too late for me to rewrite it to the newer Mat
     IplImage opencvimg2=(IplImage)img;
@@ -451,3 +461,4 @@ SDL_Surface* Game::convertToSDLSurface(const Mat& img){
                                                     0xff0000, 0x00ff00, 0x0000ff, 0);
     return surface;
 }
+*/
