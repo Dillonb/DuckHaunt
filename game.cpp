@@ -133,7 +133,7 @@ void Game::drawScore() {
 
     int w, h;
     SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-    printf("w: %i, h: %i\n", w, h);
+    //printf("w: %i, h: %i\n", w, h);
 
     SDL_Rect srcRect = {0, 0, w, h};
     SDL_Rect dstRect = {16, 64, w, h};
@@ -230,8 +230,8 @@ void Game::drawDucks() {
             //duck->setFrame((duck->getFrame()+1) % 4);
             int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &duckSrcRect, &duckDstRect);
 
-            if (result < 0)
-                printf("Calling RenderCopy: %s\n", SDL_GetError());
+            //if (result < 0)
+                //printf("Calling RenderCopy: %s\n", SDL_GetError());
         }
     }
 }
@@ -267,16 +267,23 @@ int Game::run() {
             }
         }
         double timeBetweenTicks = SDL_GetTicks() - this->lastTicks;
-        printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
+        //printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
         this->lastTicks = SDL_GetTicks();
 
         this->duckCounter += timeBetweenTicks;
 
-        if (this->duckCounter > 5000) { // Every five seconds, spawn a new duck.
+        Uint32 ticksSinceStart = SDL_GetTicks() - this->gameStartTicks;
+
+        int difficulty = 5000 - (ticksSinceStart / 30);
+        //printf("*********difficulty: %i - duckCounter: %i\n", difficulty, this->duckCounter);
+        if (difficulty < 0) {
+            difficulty = 0;
+        }
+        if (this->duckCounter > difficulty) { // Every five seconds, spawn a new duck.
             Duck d(Radian(rand() % 360), 40);
-            d.speed = (SDL_GetTicks() - this->gameStartTicks)/10000;
+            d.speed = ticksSinceStart / 7000;
             this->world.addDuck(d);
-            this->duckCounter -= 5000;
+            this->duckCounter -= difficulty;
         }
 
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
@@ -284,9 +291,9 @@ int Game::run() {
             duck->update();
 
             if (keystate[SDL_SCANCODE_SPACE]) {
-                printf("****************SPACE IS HELD DOWN******************\n");
+                //printf("****************SPACE IS HELD DOWN******************\n");
                 Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
-                printf("Magnitude of rejection: %f\n", rejection.magnitude());
+                //printf("Magnitude of rejection: %f\n", rejection.magnitude());
                 if (rejection.magnitude() <= 2 && duck->status != killedByPlayer && duck->status != dead) {
                     duck->status = killedByPlayer;
                     duck->frameCounter = 0;
