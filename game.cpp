@@ -6,6 +6,8 @@ Game::Game(int w, int h) {
     this->height = h;
     this->radarSize = w / 7;
 
+    this->duckCounter = 0;
+
 
     //if(!this->cap.isOpened()) {
         //printf("FATAL ERROR: Failed to open webcam.\n");
@@ -26,10 +28,10 @@ Game::Game(int w, int h) {
     TTF_Init();
     this->eightbitwonder = TTF_OpenFont("font.ttf", 18);
 
-    this->world.addDuck(Duck(Radian(0), 10));
-    this->world.addDuck(Duck(Radian(10), 30));
-    this->world.addDuck(Duck(Radian(30), 20));
-    this->world.addDuck(Duck(Radian(100), 40));
+    this->world.addDuck(Duck(Radian(0), 20));
+    //this->world.addDuck(Duck(Radian(10), 30));
+    //this->world.addDuck(Duck(Radian(30), 20));
+    //this->world.addDuck(Duck(Radian(100), 40));
     printf("Added all ducks\n");
     this->lastTicks = SDL_GetTicks();
     this->gameStartTicks = SDL_GetTicks();
@@ -69,9 +71,6 @@ void Game::redraw() {
     SDL_RenderPresent(this->renderer);
 
 
-    double timeBetweenTicks = SDL_GetTicks() - this->lastTicks;
-    printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
-    this->lastTicks = SDL_GetTicks();
 }
 
 void Game::drawRadar() {
@@ -92,6 +91,8 @@ void Game::drawRadar() {
     // Draw ducks on radar
 
     for (list<Duck>::iterator i = this->world.getDuckIterator(); i != this->world.getDuckEnd(); i++) {
+        if (i->status != alive)
+            continue; // Don't display dead ducks on the radar
         uint8_t red, green, blue;
         if (i->isVisible(*this->world.getPlayer())) {
             red = 0x00;
@@ -256,15 +257,28 @@ int Game::run() {
                             break;
                         case SDLK_LEFT:
                             printf("Turning left.\n");
-                            this->world.getPlayer()->turnLeft(Radian(1));
+                            this->world.getPlayer()->turnLeft(Radian(4));
                             break;
                         case SDLK_RIGHT:
                             printf("Turning right.\n");
-                            this->world.getPlayer()->turnRight(Radian(1));
+                            this->world.getPlayer()->turnRight(Radian(4));
                             break;
                     }
             }
         }
+        double timeBetweenTicks = SDL_GetTicks() - this->lastTicks;
+        printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
+        this->lastTicks = SDL_GetTicks();
+
+        this->duckCounter += timeBetweenTicks;
+
+        if (this->duckCounter > 5000) { // Every five seconds, spawn a new duck.
+            Duck d(Radian(rand() % 360), 40);
+            d.speed = (SDL_GetTicks() - this->gameStartTicks)/10000;
+            this->world.addDuck(d);
+            this->duckCounter -= 5000;
+        }
+
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
         for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
             duck->update();
@@ -273,7 +287,7 @@ int Game::run() {
                 printf("****************SPACE IS HELD DOWN******************\n");
                 Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
                 printf("Magnitude of rejection: %f\n", rejection.magnitude());
-                if (rejection.magnitude() <= 2) {
+                if (rejection.magnitude() <= 2 && duck->status != killedByPlayer && duck->status != dead) {
                     duck->status = killedByPlayer;
                     duck->frameCounter = 0;
                 }

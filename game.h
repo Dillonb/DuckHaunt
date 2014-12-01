@@ -35,6 +35,7 @@ class Game {
     World world;
     int typeNum;
     int frameCount;
+    int duckCounter;
     Mat edges;
     Mat image;
     VideoCapture cap;
