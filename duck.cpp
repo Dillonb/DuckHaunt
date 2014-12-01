@@ -41,6 +41,7 @@ void Duck::shot() {
 }
 
 void Duck::update() {
+
     int currentTick = SDL_GetTicks();
     int tickDiff = currentTick - this->lastTick;
     this->lastTick = currentTick;
@@ -55,18 +56,19 @@ void Duck::update() {
         }
         if (this->moveCounter > 2000) {
             this->moveCounter -= 2000;
-            this->position.r -= this->speed;
+            //this->position.r -= this->speed;
         }
         if (this->position.r <= ATTACK_DIST) {
             // Duck dies.
             this->status = attackedPlayer;
         }
-    }else if(this->status == killedByPlayer) {
+    }
+    else if(this->status == killedByPlayer) {
         if (this->frameCounter > 500) {
-            this-> status = dead;
+            this->status = dead;
         }
-    }else if (this->status == attackedPlayer)
-    {
+    }
+    else if (this->status == attackedPlayer) {
         this->status = dead;
     }
 }

@@ -108,7 +108,7 @@ void Game::drawHealth() {
     SDL_Rect healthSrcRect = { playerHealth * 64, 64, 64, 64 };
     SDL_Rect healthDstRect = { 0, 0, 128, 128 };
     //draw
-    int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &healthSrcRect, &healthDstRect); 
+    int result = SDL_RenderCopy(this->renderer, this->spriteTexture, &healthSrcRect, &healthDstRect);
 }
 
 void Game::drawDucks() {
@@ -116,7 +116,15 @@ void Game::drawDucks() {
         // Only worry about drawing the duck if it's visible
         if (duck->isVisible(*world.getPlayer())) {
             //typeNum = iDuck->getType();
-            SDL_Rect duckSrcRect = { duck->getFrame() * 64, 0, 64, 64 };
+            SDL_Rect duckSrcRect;
+            if (duck->status != killedByPlayer) {
+                // Draw explosion if the duck was killed by the player
+                duckSrcRect = (SDL_Rect){ 4 * 64, 0, 64, 64 };
+            }
+            else {
+                // Otherwise draw the normal sprite
+                duckSrcRect = (SDL_Rect){ duck->getFrame() * 64, 0, 64, 64 };
+            }
 
             // a = Duck
             // b = Player
@@ -141,13 +149,13 @@ void Game::drawDucks() {
             // https://upload.wikimedia.org/wikipedia/commons/9/98/Projection_and_rejection.png
             //
             // Projection vector (a1 on the image) of the edge of the FOV
-            Vector2 edgeProjection = playerVector * (edgeFovVector.dot(playerVector) / playerVector.dot(playerVector));
+            Vector2 edgeProjection = edgeFovVector.project(playerVector);
             // Rejection vector (a2 on the image) of the edge of the FOV (the maximum size the duck rejection vector can be)
             Vector2 edgeRejection = edgeFovVector - edgeProjection;
 
 
             // Projection vector (a1 on the image) of the duck
-            Vector2 projection = playerVector * (duckVector.dot(playerVector) / playerVector.dot(playerVector));
+            Vector2 projection = duckVector.project(playerVector);
             // Rejection vector (a2 on the image) of the duck
             Vector2 rejection = duckVector - projection;
 
@@ -222,14 +230,25 @@ void Game::run() {
                     }
             }
         }
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
         for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
             duck->update();
+
+            if (keystate[SDL_SCANCODE_SPACE]) {
+                printf("****************SPACE IS HELD DOWN******************\n");
+                Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
+                printf("Magnitude of rejection: %f\n", rejection.magnitude());
+                if (rejection.magnitude() <= 2) {
+                    duck->status = killedByPlayer;
+                }
+            }
+
             // Logic for when ducks die
             if (duck->status != alive) {
                 if (duck->status == attackedPlayer) {
                     // Lower player health
                     this->world.getPlayer()->loseHealth();
-                    
+
                     if (this->world.getPlayer()->getHealth() <= 0) {
                         // Player has died.
                     }
