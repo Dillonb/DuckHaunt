@@ -8,6 +8,7 @@ Here is the [Google Doc](https://docs.google.com/document/d/1TTdBHlfw9nqK5_OXADW
 Compiling
 ---------
 Ensure that you have SDL v2 installed.
+
 // ARCH DEV
 sudo pacman -S sdl2 opencv sdl2_gfx vtk sdl2_image sdl2_mixer sdl2_ttf
 
