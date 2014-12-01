@@ -117,7 +117,7 @@ void Game::drawDucks() {
         if (duck->isVisible(*world.getPlayer())) {
             //typeNum = iDuck->getType();
             SDL_Rect duckSrcRect;
-            if (duck->status != killedByPlayer) {
+            if (duck->status == killedByPlayer) {
                 // Draw explosion if the duck was killed by the player
                 duckSrcRect = (SDL_Rect){ 4 * 64, 0, 64, 64 };
             }
