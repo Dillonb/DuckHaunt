@@ -19,10 +19,17 @@
 
 using namespace cv;
 
+typedef enum gameState_t {
+    titleScreen,
+    game,
+    gameOver,
+} gameState;
+
 class Game {
     SDL_Surface* surface = NULL;
     SDL_Texture* texture = NULL;
     SDL_Texture* radarTexture = NULL;
+    SDL_Texture* titleScreenTexture = NULL;
     SDL_Texture* spriteTexture;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
@@ -39,6 +46,9 @@ class Game {
     Mat edges;
     Mat image;
     VideoCapture cap;
+
+    gameState state;
+
     void redraw();
 
     void drawRadar();

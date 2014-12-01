@@ -22,13 +22,14 @@ Game::Game(int w, int h) {
     IMG_Init(IMG_INIT_PNG); //allows png rendering
 
     this->spriteTexture = IMG_LoadTexture(this->renderer, "sprites/spriteSheet.png"); // Load the spritesheet directly into a texture
+    this->titleScreenTexture = IMG_LoadTexture(this->renderer, "sprites/title.png");
     this->surface = SDL_GetWindowSurface(this->window);
     this->texture = SDL_CreateTextureFromSurface(this->renderer, this->surface); // SDL_Texture - A structure that contains an efficient, driver-specific representation of pixel data.
 
     TTF_Init();
     this->eightbitwonder = TTF_OpenFont("font.ttf", 18);
 
-    this->world.addDuck(Duck(Radian(0), 20));
+    this->world.addDuck(Duck(Radian(20), 20));
     //this->world.addDuck(Duck(Radian(10), 30));
     //this->world.addDuck(Duck(Radian(30), 20));
     //this->world.addDuck(Duck(Radian(100), 40));
@@ -48,21 +49,26 @@ void Game::redraw() {
     //SDL_BlitSurface(frame,NULL,this->surface,NULL);
     //avoid memory leaks
     // SDL_FreeSurface(frame);
+    if (this->state == game) {
+        // Fill screen with white (eventually draw scrolling background here)
+        boxRGBA(this->renderer, 0, 0, this->width, this->height, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    // Fill screen with white (eventually draw scrolling background here)
-    boxRGBA(this->renderer, 0, 0, this->width, this->height, 0xFF, 0xFF, 0xFF, 0xFF);
+        //printf("Drawing Webcam\n");
 
-    //printf("Drawing Webcam\n");
+        drawDucks();
+        //printf("Ducks Drawn\n");
 
-    drawDucks();
-    //printf("Ducks Drawn\n");
+        drawRadar();
+        //printf("Radar Drawn\n");
 
-    drawRadar();
-    //printf("Radar Drawn\n");
+        drawScore();
 
-    drawScore();
+        drawHealth();
+    }
 
-    drawHealth();
+    if (this->state == titleScreen) {
+        SDL_RenderCopy(this->renderer, this->titleScreenTexture, NULL, NULL);
+    }
 
 
     SDL_UpdateWindowSurface(this->window);
@@ -239,8 +245,10 @@ void Game::drawDucks() {
 int Game::run() {
     bool quit = false;
     bool restart = false;
+    this->state = titleScreen;
     SDL_Event e;
     while (!quit) {
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
         SDL_Delay(10); // Wait 100ms before trying again when the stack of events becomes empty
 
         while (SDL_PollEvent(&e) != 0) { // Pull events from the stack until we can't anymore
@@ -256,73 +264,86 @@ int Game::run() {
                             quit = true; // Quit the game
                             break;
                         case SDLK_LEFT:
-                            printf("Turning left.\n");
-                            this->world.getPlayer()->turnLeft(Radian(4));
+                            if (this->state == game) {
+                                printf("Turning left.\n");
+                                this->world.getPlayer()->turnLeft(Radian(4));
+                            }
                             break;
                         case SDLK_RIGHT:
-                            printf("Turning right.\n");
-                            this->world.getPlayer()->turnRight(Radian(4));
+                            if (this->state == game) {
+                                printf("Turning right.\n");
+                                this->world.getPlayer()->turnRight(Radian(4));
+                            }
                             break;
                     }
             }
         }
-        double timeBetweenTicks = SDL_GetTicks() - this->lastTicks;
-        //printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
-        this->lastTicks = SDL_GetTicks();
-
-        this->duckCounter += timeBetweenTicks;
-
-        Uint32 ticksSinceStart = SDL_GetTicks() - this->gameStartTicks;
-
-        int difficulty = 5000 - (ticksSinceStart / 30);
-        //printf("*********difficulty: %i - duckCounter: %i\n", difficulty, this->duckCounter);
-        if (difficulty < 0) {
-            difficulty = 0;
-        }
-        if (this->duckCounter > difficulty) { // Every five seconds, spawn a new duck.
-            Duck d(Radian(rand() % 360), 40);
-            d.speed = ticksSinceStart / 7000;
-            this->world.addDuck(d);
-            this->duckCounter -= difficulty;
-        }
-
-        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-        for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
-            duck->update();
-
+        if (this->state == titleScreen) {
             if (keystate[SDL_SCANCODE_SPACE]) {
-                //printf("****************SPACE IS HELD DOWN******************\n");
-                Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
-                //printf("Magnitude of rejection: %f\n", rejection.magnitude());
-                if (rejection.magnitude() <= 2 && duck->status != killedByPlayer && duck->status != dead) {
-                    duck->status = killedByPlayer;
-                    duck->frameCounter = 0;
-                }
+                this->state = game;
+            }
+        }
+        if (this->state == game) {
+            double timeBetweenTicks = SDL_GetTicks() - this->lastTicks;
+            //printf("FPS: %f\n", 1000 * pow(timeBetweenTicks, -1));
+            this->lastTicks = SDL_GetTicks();
+
+            this->duckCounter += timeBetweenTicks;
+
+            Uint32 ticksSinceStart = SDL_GetTicks() - this->gameStartTicks;
+
+            int difficulty = 5000 - (ticksSinceStart / 30);
+            //printf("*********difficulty: %i - duckCounter: %i\n", difficulty, this->duckCounter);
+            if (difficulty < 0) {
+                difficulty = 0;
+            }
+            if (this->duckCounter > difficulty) { // Every five seconds, spawn a new duck.
+                Duck d(Radian(rand() % 360), 40);
+                d.speed = ticksSinceStart / 7000;
+                this->world.addDuck(d);
+                this->duckCounter -= difficulty;
             }
 
-            // Logic for when ducks die
-            if (duck->status != alive) {
-                if (duck->status == attackedPlayer) {
-                    // Lower player health
-                    this->world.getPlayer()->loseHealth();
+            for (list<Duck>::iterator duck = this->world.getDuckIterator(); duck != this->world.getDuckEnd(); duck++) {
+                duck->update();
 
-                    if (this->world.getPlayer()->getHealth() <= 0) {
-                        // Player has died.
+                if (keystate[SDL_SCANCODE_SPACE]) {
+                    //printf("****************SPACE IS HELD DOWN******************\n");
+                    Vector2 rejection = duck->position.toVector2() - (duck->position.toVector2().project(this->world.getPlayer()->getVector()));
+                    //printf("Magnitude of rejection: %f\n", rejection.magnitude());
+                    if (rejection.magnitude() <= 2 && duck->status != killedByPlayer && duck->status != dead) {
+                        duck->status = killedByPlayer;
+                        duck->frameCounter = 0;
                     }
                 }
-                else if (duck->status == killedByPlayer && !duck->scoreAdded) {
-                    // Raise player score
-                    this->world.getPlayer()->addScore(duck->speed * 100);
-                    duck->scoreAdded = true;
-                }else if (duck->status == dead){
-                    // Remove duck from list
-                    duck = this->world.ducks.erase(duck);
+
+                // Logic for when ducks die
+                if (duck->status != alive) {
+                    if (duck->status == attackedPlayer) {
+                        // Lower player health
+                        this->world.getPlayer()->loseHealth();
+
+                        if (this->world.getPlayer()->getHealth() <= 0) {
+                            // Player has died.
+                            // Set game state to game over
+                        }
+                    }
+                    else if (duck->status == killedByPlayer && !duck->scoreAdded) {
+                        // Raise player score
+                        this->world.getPlayer()->addScore(duck->speed * 100);
+                        duck->scoreAdded = true;
+                    }else if (duck->status == dead){
+                        // Remove duck from list
+                        duck = this->world.ducks.erase(duck);
+                    }
                 }
             }
+            // Ensure that the closer ducks are first in the list
+            this->world.ducks.sort(Duck::compare_distance);
+            this->world.ducks.reverse();
         }
-        // Ensure that the closer ducks are first in the list
-        this->world.ducks.sort(Duck::compare_distance);
-        this->world.ducks.reverse();
+        if (this->state == titleScreen) {
+        }
         this->redraw();
     }
     if (restart) {

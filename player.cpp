@@ -4,6 +4,7 @@ Player::Player() {
     this->angle = Radian(0);
     this->FOV = Radian(60);
     this->health = 5;
+    this->score = 0;
 }
 
 Radian Player::getAngle() {
