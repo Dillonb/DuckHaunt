@@ -86,10 +86,10 @@ void Game::redraw() {
         // Fill screen with white (eventually draw scrolling background here)
         boxRGBA(this->renderer, 0, 0, this->width, this->height, 0xFF, 0xFF, 0xFF, 0xFF);
 
-        SDL_Rect dstRect1;
-        SDL_Rect dstRect2;
+        //SDL_Rect dstRect1;
+        //SDL_Rect dstRect2;
 
-        dstRect1 = (SDL_Rect){this->world.getPlayer()->getAngle().toDegrees(), 0, 960, 480};
+        //dstRect1 = (SDL_Rect){this->world.getPlayer()->getAngle().toDegrees(), 0, 960, 480};
 
         //SDL_RenderCopy(this->renderer, this->backgroundTexture, NULL, &dstRect1);
         //SDL_RenderCopy(this->renderer, this->backgroundTexture, NULL, dstRect2);
