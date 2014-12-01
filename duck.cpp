@@ -56,7 +56,7 @@ void Duck::update() {
         }
         if (this->moveCounter > 2000) {
             this->moveCounter -= 2000;
-            //this->position.r -= this->speed;
+            this->position.r -= this->speed;
         }
         if (this->position.r <= ATTACK_DIST) {
             // Duck dies.
