@@ -11,19 +11,20 @@ Ensure that you have SDL v2 installed.
 
 // ARCH DEV
 
-sudo pacman -S sdl2 opencv sdl2_gfx vtk sdl2_image sdl2_mixer sdl2_ttf
+        sudo pacman -S sdl2 opencv sdl2_gfx vtk sdl2_image sdl2_mixer sdl2_ttf
 
 
 
 // DEBIAN DEV - update me please
 
-sudo apt-get install libsdl2-dev
+        sudo apt-get install libsdl2-dev
 
 
 
 // PI
-sudo pacman -Syu
-sudo pacman -S git pkg_config make python i2c-tools libi2c-dev opencv sdl2 sdl2_gfx vtk sdl2_image sdl2_ttf sdl2_mixer && git clone git://git.drogon.net/wiringPi && cd wiringPi && ./build
+
+        sudo pacman -Syu
+        sudo pacman -S git pkg_config make python i2c-tools libi2c-dev opencv sdl2 sdl2_gfx vtk sdl2_image sdl2_ttf sdl2_mixer && git clone git://git.drogon.net/wiringPi && cd wiringPi && ./build
 
 
 Run commands:
