@@ -14,6 +14,7 @@ Polarcoord::Polarcoord(Vector2 position) {
     this->r = sqrt(pow(position.x,2) + pow(position.y,2));
     this->theta = Radian();
     this->theta.radVal = atan2(position.y, position.x);
+    this->theta.normalize();
 }
 
 Polarcoord::Polarcoord(const Polarcoord& other) {

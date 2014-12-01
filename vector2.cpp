@@ -1,6 +1,4 @@
 #include "vector2.h"
-#include <cstdlib>
-#include <cstdio>
 
 Vector2::Vector2(double x, double y) {
     this->x = x;
@@ -35,4 +33,21 @@ Vector2 Vector2::operator*(double multiplicand) {
 }
 double Vector2::dot(Vector2 other) {
     return (this->x * other.x) + (this->y * other.y);
+}
+
+double Vector2::magnitude() {
+    return sqrt(pow(this->x,2) + pow(this->y,2));
+}
+
+int Vector2::rightOf(Vector2 other) {
+    Vector2 temp(-1 * this->y, this->x); // Rotate this vector 90 degrees counter clockwise
+    double result = other.dot(temp);
+    return (result > 0) ? 1 : ((result < 0) ? -1 : 0);
+
+}
+// Returns the projection vector of this onto other
+Vector2 Vector2::project(Vector2 other) {
+    // this = duck
+    // other = player
+    return other * (this->dot(other) / other.dot(other));
 }

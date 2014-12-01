@@ -1,5 +1,8 @@
 #ifndef VECTOR2_H
 #define VECTOR2_H
+#include <cstdlib>
+#include <cstdio>
+#include <math.h>
 
 class Vector2 {
     public:
@@ -13,6 +16,9 @@ class Vector2 {
         Vector2 operator+(Vector2);
         Vector2 operator-(Vector2);
         double dot(Vector2);
+        double magnitude();
+        Vector2 project(Vector2);
+        int rightOf(Vector2);
 };
 
 
